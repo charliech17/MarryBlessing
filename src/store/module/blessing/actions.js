@@ -1,0 +1,26 @@
+export default {
+    addBlessingText(context,payload){
+        context.commit('addBlessingText',payload);
+    },
+    isAddingText(context,boolen){
+        context.commit('isAddingText',boolen);
+    },
+    editBlessingText(context,change){
+        context.commit('editBlessingText',change);
+    },
+    isEditingText(context,editObject){
+        context.commit('isEditingText',editObject);
+    },
+    setInitialValues(context,initialValues){
+        context.commit('setInitialValues',initialValues);
+    },
+    deleteBlessing(context,id){
+        context.commit('deleteBlessing',id);
+    },
+    isTextMoving(context,boolen){
+        context.commit('isTextMoving',boolen);
+    },
+    tryToDelete(context,boolen){
+        context.commit('tryToDelete',boolen);
+    }
+}
