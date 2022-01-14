@@ -1,6 +1,6 @@
 <template>
   <div class="edit_text_contorl" v-if="isEditingText">
-    <base-button @pointerdown="sizeChange" disabled >大小</base-button>
+    <base-button @pointerdown="sizeChange" disabled>大小</base-button>
     <base-button @pointerdown.prevent="textColor">顏色</base-button>
     <base-button @pointerdown="changeTextBackground">背景</base-button>
     <base-button disabled>動畫</base-button>
@@ -13,13 +13,14 @@
     :isEditingText="isEditingText"
     @colorInputFalse="colorInputFalse"
   ></color-input>
-  
 </template>
 
 <script>
 import { computed, ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import ColorInput from "./color/ColorInput.vue";
+import { nextTick, watch } from "@vue/runtime-core";
+import editMoveText from '../../../hooks/editMoveText.js';
 
 export default {
   components: {
@@ -31,6 +32,14 @@ export default {
     const isEditingText = computed(
       () => store.getters["blessing/isEditText"].isEditing
     );
+    watch(isEditingText, () => {
+      nextTick(() => {
+        if (isEditingText.value && getTextArea().id !== "root") {
+          const textArea = getTextArea();
+          editMoveText(textArea);
+        }
+      });
+    });
 
     function sizeChange() {
       //do somthing
@@ -38,19 +47,16 @@ export default {
 
     const showColorInput = ref(false);
 
-    
     function textColor() {
       // showColorInput.value = true;
       showColorInput.value = !showColorInput.value;
     }
 
-    function colorInputFalse(){
+    function colorInputFalse() {
       showColorInput.value = false;
     }
 
-    function changeTextBackground(){
-
-    }
+    function changeTextBackground() {}
 
     function nowEditText(boolen, id) {
       const editTexting = {
@@ -60,12 +66,11 @@ export default {
       store.dispatch("blessing/isEditingText", editTexting);
     }
 
-    function getTextArea(){
+    function getTextArea() {
       const elementId = store.getters["blessing/isEditText"].editId;
       const textArea = document.getElementById(elementId);
       return textArea;
     }
-
 
     return {
       isEditingText,
@@ -75,7 +80,7 @@ export default {
       getTextArea,
       nowEditText,
       colorInputFalse,
-      changeTextBackground
+      changeTextBackground,
     };
   },
 };
@@ -96,6 +101,7 @@ export default {
   gap: 5vw;
   background-color: rgb(59, 8, 153);
   border-radius: 1rem;
+  position: sticky;
 }
 
 .edit_text_contorl button {
@@ -117,4 +123,14 @@ export default {
   background-color: #f0c5e2;
 }
 
+@keyframes editMoveUpText {
+  from {
+    top: 50%;
+    left: 50%;
+  }
+  to {
+    top: 5;
+    left: 0;
+  }
+}
 </style>

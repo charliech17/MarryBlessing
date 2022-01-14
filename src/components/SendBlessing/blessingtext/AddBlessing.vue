@@ -1,6 +1,6 @@
 <template>
-  <div class="main_contents">
-    <canvas id="canvas" ref="canvas" :class="{ opacity: isEditText.isEditing }" @pointerdown.prevent="blurTextArea" tabindex="-1">
+  <div class="main_contents" >
+    <canvas id="canvas" ref="canvas" :class="{ opacity: isEditText.isEditing }" @pointerdown.prevent="blurTextArea">
     </canvas>
     <textarea
       class="input_text"
@@ -102,7 +102,6 @@ export default {
         }
       } catch (err) {
         //err
-        console.log(err);
       }
       nowEditText(false, "root");
 
@@ -116,8 +115,8 @@ export default {
         text: enterText.value,
         style: {
           left: 5 + `%`,
-          top: null,
-          bottom: 50 + `%`,
+          top: `10%`,
+          bottom: 0,
           width: `${textAreaWidth.value}px`,
           height: finalHeight,
           color: window.getComputedStyle(textInput.value).color,
@@ -151,8 +150,23 @@ export default {
       setZIndex();
     }
 
-    function blurTextArea(){
-      canvas.value.focus();
+    window.addEventListener("pointerdown", (e) => {
+      
+      if (e.target.className === "show_bg_image") {
+        blurTextArea();  
+      }
+    });
+    function blurTextArea() {
+      var field = document.createElement("input");
+      field.setAttribute("type", "text");
+      document.body.appendChild(field);
+
+      setTimeout(function () {
+        field.focus();
+        setTimeout(function () {
+          field.remove();
+        }, 50);
+      }, 50);
     }
 
     function setZIndex() {
@@ -207,7 +221,7 @@ export default {
 
 .input_text {
   position: absolute;
-  bottom: 50%;
+  top: 10%;
   left: 5%;
   border: none;
   outline: none;

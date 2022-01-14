@@ -8,10 +8,10 @@
     draggable="false"
     @mousedown="mouseClick"
     @mousemove="mouseMove($event)"
-    @touchstart="mouseClick"
+    @touchstart.prevent="mouseClick"
     @touchmove.prevent="mouseMove($event)"
     @touchend.prevent="touchEdit($event, blessing.id)"
-    @blur="blurTextArea($event, blessing.id)"
+    @blur="blurTextArea($event, blessing.id, blessing.style)"
     @dblclick.prevent="clickEdit($event, blessing.id)"
   />
   <!-- :readonly="judgeParameter.onlyRead" -->
@@ -20,7 +20,7 @@
 <script>
 import { reactive, ref } from "@vue/reactivity";
 import { computed, nextTick, watch } from "@vue/runtime-core";
-
+import editMoveText from "../../../hooks/editMoveText.js";
 import { useStore } from "vuex";
 
 export default {
@@ -79,7 +79,7 @@ export default {
       judgeParameter.notFocus = false;
       judgeParameter.wantEdit = true;
     }
-// const { htmlWidth, htmlHeight } = getHtmlWidthAndHeight();
+    // const { htmlWidth, htmlHeight } = getHtmlWidthAndHeight();
     function mouseMove(event) {
       if (judgeParameter.notFocus || judgeParameter.nowDoubleClick) {
         return;
@@ -103,7 +103,7 @@ export default {
         return;
       }
 
-      console.log(event.touches);
+      // console.log(event.touches);
 
       judgeParameter.wantEdit = false;
       judgeParameter.isMouseMove = true;
@@ -182,7 +182,7 @@ export default {
 
     window.addEventListener("mouseup", mouseup);
 
-    function blurTextArea(event, id) {
+    function blurTextArea(event, id, blessingStyle) {
       const textArea = event.target;
 
       textArea.style.height = "1px";
@@ -208,12 +208,19 @@ export default {
 
       nowEditText(boolenIsEdting, id);
 
+      // console.log(blessingStyle.top);
+      editMoveText(
+        textArea,
+        blessingStyle.top,
+        blessingStyle.left,
+        blessingStyle.bottom
+      );
       if (isDoubleClick) {
         const changeParameters = {
           text: textArea.value,
           width: `${textArea.offsetWidth}px`,
           height: finalHeight,
-          color: window.getComputedStyle(textArea).color
+          color: window.getComputedStyle(textArea).color,
         };
 
         updateBlessingText(id, changeParameters);
@@ -337,5 +344,6 @@ textarea {
   cursor: pointer;
   padding: 0;
   z-index: 1;
+  /* transition: all 0.3s ease-out; */
 }
 </style>
