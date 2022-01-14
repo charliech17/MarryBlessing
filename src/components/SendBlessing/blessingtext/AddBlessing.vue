@@ -1,17 +1,19 @@
 <template>
   <div class="main_contents">
-    <canvas id="canvas" ref="canvas" :class="{opacity:isEditText.isEditing}"> </canvas>
+    <canvas id="canvas" ref="canvas" :class="{ opacity: isEditText.isEditing }" @pointerdown.prevent="blurTextArea" tabindex="-1">
+    </canvas>
     <textarea
       class="input_text"
       id="root"
       v-if="showTextArea"
       v-model="enterText"
       ref="textInput"
-      @blur="blurInput"
+      @touchend="blurInput"
       @input="changeSize"
-      @focus="setZIndex"
+      @blur="blurInput"
     />
-
+    <!-- @focus="handleFocus" -->
+    <!-- @blur="blurInput" -->
     <!-- https://source.unsplash.com/gYl-UtwNg_I/1500x1500 -->
 
     <blessing-text :canvas="canvas"></blessing-text>
@@ -19,21 +21,24 @@
     <delete-text
       :class="{ hidden: !isTextMoving, tryDelete: wantDelete }"
     ></delete-text>
-    <!-- :class="{hidden: !isTextMoving,tryDelete:wantDelete}" -->
+
+    <background-image></background-image>
   </div>
 </template>
 
 <script>
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import BlessingText from "./ShowBlessingtext.vue";
 import changeTextareaWidth from "../../../hooks/changeTextareaWidth.js";
 import DeleteText from "./delete/DeleteText.vue";
+import BackgroundImage from "./bgimage/BackgroundImage.vue";
 import "animate.css";
 export default {
   components: {
     BlessingText,
     DeleteText,
+    BackgroundImage,
   },
   setup() {
     const store = useStore();
@@ -48,23 +53,23 @@ export default {
       () => store.getters["blessing/getIsTextMoving"]
     );
     const wantDelete = computed(() => store.getters["blessing/getWantDelete"]);
-    const inputImage = computed(() => store.getters["addphoto/getInputStatus"]);
-    const isEditText = computed(()=>store.getters["blessing/isEditText"]);
-    let uploaded_image = "";
+    // const inputImage = computed(() => store.getters["addphoto/getInputStatus"]);
+    const isEditText = computed(() => store.getters["blessing/isEditText"]);
+    // let uploaded_image = "";
 
-    onMounted(() => {
-      watch(inputImage, () => {
-        
-        if(!inputImage.value.newInput) return;
-        const reader = new FileReader();
-        reader.addEventListener("load", () => {
-         uploaded_image = reader.result;
-         canvas.value.style.backgroundImage = `url(${uploaded_image})`;
-        });
-        reader.readAsDataURL(inputImage.value.inputFile.files[0]);
-        store.dispatch("addphoto/tellImageInput", {newInput:false,inputFile:null});
-      });
-    });
+    // onMounted(() => {
+    //   watch(inputImage, () => {
+
+    //     if(!inputImage.value.newInput) return;
+    //     const reader = new FileReader();
+    //     reader.addEventListener("load", () => {
+    //      uploaded_image = reader.result;
+    //      canvas.value.style.backgroundImage = `url(${uploaded_image})`;
+    //     });
+    //     reader.readAsDataURL(inputImage.value.inputFile.files[0]);
+    //     store.dispatch("addphoto/tellImageInput", {newInput:false,inputFile:null});
+    //   });
+    // });
 
     async function focusTextInput() {
       await (showTextArea.value = true);
@@ -81,16 +86,23 @@ export default {
     const enterText = ref("");
 
     function blurInput(event) {
+      // if(event.target === textInput.value){
+      //   return;
+      // }
       let boolenIsEdting = false;
 
       try {
-        if (event.relatedTarget.tagName === "BUTTON") {
+        if (
+          event.relatedTarget.tagName === "BUTTON" ||
+          event.relatedTarget.tagName === "DIV"
+        ) {
           boolenIsEdting = true;
           nowEditText(boolenIsEdting, "root");
           return;
         }
       } catch (err) {
         //err
+        console.log(err);
       }
       nowEditText(false, "root");
 
@@ -135,9 +147,21 @@ export default {
       textInput.value.style.width = `${changeTextareaWidth(textInput)}px`;
     }
 
+    function handleFocus() {
+      setZIndex();
+    }
+
+    function blurTextArea(){
+      canvas.value.focus();
+    }
+
     function setZIndex() {
       textInput.value.style.zIndex = 2147483647;
     }
+
+    // function outsideTextarea(){
+
+    // }
 
     function nowEditText(boolen, id) {
       const editTexting = {
@@ -148,6 +172,8 @@ export default {
     }
 
     return {
+      blurTextArea,
+      handleFocus,
       textInput,
       showTextArea,
       enterText,
@@ -157,7 +183,7 @@ export default {
       canvas,
       isTextMoving,
       wantDelete,
-      isEditText
+      isEditText,
     };
   },
 };
@@ -172,14 +198,11 @@ export default {
 }
 
 #canvas {
-  width: 95%;
+  width: 100%;
   height: 75vh;
   display: block;
   background-color: rgb(241, 204, 204);
   border-radius: 2rem;
-  background-position: center;
-  background-size: contain;
-  background-repeat: no-repeat;
 }
 
 .input_text {
@@ -238,7 +261,7 @@ export default {
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.2);
 }
 
-.opacity{
+.opacity {
   opacity: 0.2;
 }
 </style>

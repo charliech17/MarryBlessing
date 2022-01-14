@@ -5,7 +5,6 @@
     :key="index"
     :value="blessing.text"
     :style="styleList(blessing.style)"
-    :readonly="judgeParameter.onlyRead"
     draggable="false"
     @mousedown="mouseClick"
     @mousemove="mouseMove($event)"
@@ -15,6 +14,7 @@
     @blur="blurTextArea($event, blessing.id)"
     @dblclick.prevent="clickEdit($event, blessing.id)"
   />
+  <!-- :readonly="judgeParameter.onlyRead" -->
 </template>
 
 <script>
@@ -79,7 +79,7 @@ export default {
       judgeParameter.notFocus = false;
       judgeParameter.wantEdit = true;
     }
-
+// const { htmlWidth, htmlHeight } = getHtmlWidthAndHeight();
     function mouseMove(event) {
       if (judgeParameter.notFocus || judgeParameter.nowDoubleClick) {
         return;
@@ -102,6 +102,8 @@ export default {
       if (!judgeParameter.mousePressed) {
         return;
       }
+
+      console.log(event.touches);
 
       judgeParameter.wantEdit = false;
       judgeParameter.isMouseMove = true;
@@ -211,6 +213,7 @@ export default {
           text: textArea.value,
           width: `${textArea.offsetWidth}px`,
           height: finalHeight,
+          color: window.getComputedStyle(textArea).color
         };
 
         updateBlessingText(id, changeParameters);
@@ -333,5 +336,6 @@ textarea {
   text-align: center;
   cursor: pointer;
   padding: 0;
+  z-index: 1;
 }
 </style>

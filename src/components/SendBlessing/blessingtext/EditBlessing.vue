@@ -1,23 +1,23 @@
 <template>
   <div class="edit_text_contorl" v-if="isEditingText">
-    <base-button @click="sizeChange">大小</base-button>
-    <base-button @click="textColor">顏色</base-button>
-    <base-button>背景</base-button>
-    <base-button>動畫</base-button>
-    <base-button>字形</base-button>
+    <base-button @pointerdown="sizeChange" disabled >大小</base-button>
+    <base-button @pointerdown.prevent="textColor">顏色</base-button>
+    <base-button @pointerdown="changeTextBackground">背景</base-button>
+    <base-button disabled>動畫</base-button>
+    <base-button disabled>字形</base-button>
   </div>
-<!-- v-if="isEditingText" -->
   <color-input
-    :colorIn="colorInput"
+    :colorIn="showColorInput"
     :textArea="getTextArea"
     :nowEdit="nowEditText"
+    :isEditingText="isEditingText"
     @colorInputFalse="colorInputFalse"
   ></color-input>
   
 </template>
 
 <script>
-import { computed, reactive } from "@vue/reactivity";
+import { computed, ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import ColorInput from "./color/ColorInput.vue";
 
@@ -28,7 +28,6 @@ export default {
   setup() {
     const store = useStore();
 
-
     const isEditingText = computed(
       () => store.getters["blessing/isEditText"].isEditing
     );
@@ -37,19 +36,20 @@ export default {
       //do somthing
     }
 
-    const colorInput = reactive({
-      color: "",
-      showInput: false,
-    });
+    const showColorInput = ref(false);
 
     
     function textColor() {
-      colorInput.showInput = true;
-      nowEditText(false, store.getters["blessing/isEditText"].editId);
+      // showColorInput.value = true;
+      showColorInput.value = !showColorInput.value;
     }
 
     function colorInputFalse(){
-      colorInput.showInput = false;
+      showColorInput.value = false;
+    }
+
+    function changeTextBackground(){
+
     }
 
     function nowEditText(boolen, id) {
@@ -71,10 +71,11 @@ export default {
       isEditingText,
       sizeChange,
       textColor,
-      colorInput,
+      showColorInput,
       getTextArea,
       nowEditText,
       colorInputFalse,
+      changeTextBackground
     };
   },
 };
@@ -91,6 +92,7 @@ export default {
   justify-content: center;
   align-items: center;
   margin: 2vh 5vw;
+  margin-bottom: 0;
   gap: 5vw;
   background-color: rgb(59, 8, 153);
   border-radius: 1rem;
