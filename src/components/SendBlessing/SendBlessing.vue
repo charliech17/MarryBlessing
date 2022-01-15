@@ -1,16 +1,17 @@
 <template>
   <the-header></the-header>
-  
-    <div class="buttons" v-if="!isEditingText">
-      <addphoto-button></addphoto-button>
-      <base-button buttonStyle="purple" @click="addText" :needImage="true"
-        >新增文字 <template #img> <img src="../../img/text.png" /> </template
-      ></base-button>
-      <base-button buttonStyle="purple" :needImage="true"
-        >上傳<template #img> <img src="../../img/upload.png" /> </template
-      ></base-button>
-    </div>
-    <edit-blessing></edit-blessing>
+  <transition name="edit" >
+  <div class="buttons" v-if="!isEditingText">
+    <addphoto-button></addphoto-button>
+    <base-button buttonStyle="purple" @click="addText" :needImage="true"
+      >新增文字 <template #img> <img src="../../img/text.png" /> </template
+    ></base-button>
+    <base-button buttonStyle="purple" :needImage="true"
+      >上傳<template #img> <img src="../../img/upload.png" /> </template
+    ></base-button>
+  </div>
+  </transition>
+  <edit-blessing></edit-blessing>
 
   <add-blessing> </add-blessing>
 </template>
@@ -78,14 +79,15 @@ export default {
 .editTextControls-leave-to{
 
 } */
+
 .edit-enter-from {
   opacity: 0;
-  /* transform: translateY(-30px); */
+  transform: translateY(-30px);
 }
 
 .edit-leave-to {
   opacity: 0;
-  /* transform: translateY(30px); */
+  transform: translateY(30px);
 }
 
 .edit-enter-active {
@@ -99,8 +101,9 @@ export default {
 .edit-enter-to,
 .edit-leave-from {
   opacity: 1;
-  /* transform: translateY(0); */
+  transform: translateY(0);
 }
+
 /* .add_photos {
   background: #350b79;
   border-radius: 1rem;

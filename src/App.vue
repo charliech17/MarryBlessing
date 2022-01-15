@@ -14,6 +14,6 @@ html,
 body {
   margin: 0;
   height: 100vh;
-  transition:scroll .2s ;
+  transition:scroll 1s ease-in-out;
 }
 </style>

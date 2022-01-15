@@ -1,18 +1,20 @@
 <template>
-  <div class="edit_text_contorl" v-if="isEditingText">
-    <base-button @pointerdown="sizeChange" disabled>大小</base-button>
-    <base-button @pointerdown.prevent="textColor">顏色</base-button>
-    <base-button @pointerdown="changeTextBackground">背景</base-button>
-    <base-button disabled>動畫</base-button>
-    <base-button disabled>字形</base-button>
-  </div>
-  <color-input
-    :colorIn="showColorInput"
-    :textArea="getTextArea"
-    :nowEdit="nowEditText"
-    :isEditingText="isEditingText"
-    @colorInputFalse="colorInputFalse"
-  ></color-input>
+<transition name="edit">
+      <div class="edit_text_contorl" v-if="isEditingText">
+        <base-button @pointerdown="sizeChange" disabled>大小</base-button>
+        <base-button @pointerdown.prevent="textColor">顏色</base-button>
+        <base-button @pointerdown="changeTextBackground">背景</base-button>
+        <base-button disabled>動畫</base-button>
+        <base-button disabled>字形</base-button>
+      </div>
+</transition>
+      <color-input
+        :colorIn="showColorInput"
+        :textArea="getTextArea"
+        :nowEdit="nowEditText"
+        :isEditingText="isEditingText"
+        @colorInputFalse="colorInputFalse"
+      ></color-input>
 </template>
 
 <script>
@@ -20,7 +22,7 @@ import { computed, ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import ColorInput from "./color/ColorInput.vue";
 import { nextTick, watch } from "@vue/runtime-core";
-import editMoveText from '../../../hooks/editMoveText.js';
+import editMoveText from "../../../hooks/editMoveText.js";
 
 export default {
   components: {
@@ -121,6 +123,32 @@ export default {
 .edit_text_contorl button:hover,
 .edit_text_contorl button:active {
   background-color: #f0c5e2;
+}
+
+.edit-enter-from {
+  opacity: 0;
+  transform: translateY(-5px);
+  /* transition: all .1s; */
+}
+
+.edit-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.edit-enter-active {
+  transition: all 0.2s ease-out;
+}
+
+.edit-leave-active {
+  transition: all 0.5s ease-in;
+}
+
+.edit-enter-to,
+.edit-leave-from {
+  opacity: 1;
+  transform: translateY(5px);
+  /* transition: all 0.1s; */
 }
 
 </style>
