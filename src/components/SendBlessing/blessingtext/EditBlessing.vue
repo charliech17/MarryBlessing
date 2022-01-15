@@ -58,7 +58,9 @@ export default {
       showColorInput.value = false;
     }
 
-    function changeTextBackground() {}
+    function changeTextBackground() {
+      
+    }
 
     function nowEditText(boolen, id) {
       const editTexting = {
@@ -127,7 +129,7 @@ export default {
 
 .edit-enter-from {
   opacity: 0;
-  transform: translateY(-5px);
+  transform: translateY(30px);
   /* transition: all .1s; */
 }
 
@@ -137,7 +139,7 @@ export default {
 }
 
 .edit-enter-active {
-  transition: all 0.2s ease-out;
+  transition: all 0.5s ease-out;
 }
 
 .edit-leave-active {
@@ -147,7 +149,7 @@ export default {
 .edit-enter-to,
 .edit-leave-from {
   opacity: 1;
-  transform: translateY(5px);
+  transform: translateY(0px);
   /* transition: all 0.1s; */
 }
 

@@ -1,17 +1,17 @@
 <template>
-  <div class="show_bg_image" ref="bgImage"></div>
+   <div class="show_bg_image" ref="bgImage"></div>
 </template>
 
 <script>
-import { computed, ref } from '@vue/reactivity';
-import { onMounted, watch } from '@vue/runtime-core';
-import { useStore } from 'vuex';
+import { computed, ref } from "@vue/reactivity";
+import { onMounted, watch } from "@vue/runtime-core";
+import { useStore } from "vuex";
 
 export default {
   setup() {
     const store = useStore();
     const inputImage = computed(() => store.getters["addphoto/getInputStatus"]);
-    const bgImage = ref('');
+    const bgImage = ref("");
     let uploaded_image = "";
 
     onMounted(() => {
@@ -32,7 +32,7 @@ export default {
     });
 
     return {
-        bgImage,
+      bgImage,
     };
   },
 };
@@ -44,10 +44,11 @@ export default {
   bottom: 0;
   width: 100%;
   height: 100%;
-   background-position: center;
+  background-position: center;
   /* background-size: contain; */
   background-size: contain;
   background-repeat: no-repeat;
   z-index: 0;
+  /* transition: 2s; */
 }
 </style>

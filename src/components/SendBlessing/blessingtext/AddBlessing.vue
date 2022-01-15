@@ -1,35 +1,38 @@
 <template>
-  <div class="main_contents">
-    <canvas
-      id="canvas"
-      ref="canvas"
-      :class="{ opacity: isEditText.isEditing }"
-      @pointerdown.prevent="blurTextArea"
-    >
-    </canvas>
-    <textarea
-      class="input_text"
-      id="root"
-      v-if="showTextArea"
-      v-model="enterText"
-      ref="textInput"
-      @touchend="blurInput"
-      @input="changeSize"
-      @blur="blurInput"
-      @focus="handleFocus"
-    />
-    <!-- @blur="blurInput" -->
+    <div class="main_contents">
+      <transition name="edit">
+      <canvas
+        id="canvas"
+        ref="canvas"
+        :class="{ opacity: isEditText.isEditing }"
+        @pointerdown.prevent="blurTextArea"
+        v-if="!isEditText.isEditing"
+      >
+      </canvas>
+      </transition>
+      <textarea
+        class="input_text"
+        id="root"
+        v-if="showTextArea"
+        v-model="enterText"
+        ref="textInput"
+        @touchend="blurInput"
+        @input="changeSize"
+        @blur="blurInput"
+        @focus="handleFocus"
+      />
+      <!-- @blur="blurInput" -->
 
-    <blessing-text :canvas="canvas"></blessing-text>
+      <blessing-text :canvas="canvas"></blessing-text>
 
-    <delete-text
-      :class="{ hidden: !isTextMoving, tryDelete: wantDelete }"
-    ></delete-text>
+      <delete-text
+        :class="{ hidden: !isTextMoving, tryDelete: wantDelete }"
+      ></delete-text>
 
-    <background-image
-      :class="{ opacity: isEditText.isEditing }"
-    ></background-image>
-  </div>
+      <background-image
+        :class="{ opacity: isEditText.isEditing }"
+      ></background-image>
+    </div>
 </template>
 
 <script>
@@ -103,7 +106,7 @@ export default {
         text: enterText.value,
         style: {
           left: 5 + `%`,
-          top: `10%`,
+          top: `5%`,
           bottom: 0,
           width: `${textAreaWidth.value}px`,
           height: finalHeight,
@@ -140,8 +143,7 @@ export default {
     }
 
     window.addEventListener("pointerdown", (e) => {
-  
-      if (e.target.className.split(' ')[0] === "show_bg_image") {
+      if (e.target.className.split(" ")[0] === "show_bg_image") {
         blurTextArea();
       }
     });
@@ -153,7 +155,7 @@ export default {
         width: "100%",
         border: "none",
         outline: "none",
-        position:"absolute"
+        position: "fixed",
       });
 
       document.body.appendChild(field);
@@ -210,7 +212,6 @@ export default {
   display: block;
   background-color: rgb(241, 204, 204);
   border-radius: 2rem;
-  transition: pointerdown 5s ease-in-out;
 }
 
 .input_text {
@@ -271,5 +272,31 @@ export default {
 
 .opacity {
   opacity: 0.2;
+}
+
+.edit-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+  /* transition: all .1s; */
+}
+
+.edit-leave-to {
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.edit-enter-active {
+  transition: all .8s ease-in;
+}
+
+.edit-leave-active {
+  transition: all 0.5s ease-in;
+}
+
+.edit-enter-to,
+.edit-leave-from {
+  opacity: 1;
+  transform: translateY(-10px);
+  /* transition: all 0.1s; */
 }
 </style>
