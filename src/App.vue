@@ -14,8 +14,6 @@ html,
 body {
   margin: 0;
   height: 100vh;
-  /* overflow: hidden; */
-  scroll-behavior: smooth;
-  /* transition: scroll .5s; */
+  transition:scroll .2s ;
 }
 </style>

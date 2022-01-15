@@ -18,14 +18,14 @@
     <div
       class="less_color"
       @pointerdown.prevent="changePageColor(-1)"
-      v-if="colorPage >= 1"
+      v-if="judgeShowPage(false)"
     >
       <div></div>
     </div>
     <div
       class="more_color"
       @pointerdown.prevent="changePageColor(1)"
-      v-if="colorPage <= 1"
+      v-if="judgeShowPage(true)"
     >
       <div></div>
     </div>
@@ -43,15 +43,11 @@
 <script>
 import { reactive, ref } from "@vue/reactivity";
 import textColor from "./textColor.js";
-// import { useStore } from "vuex";
-// import { nextTick, watch } from "@vue/runtime-core";
-// import getNewBlessingText from "../../../../hooks/getNewBlessingText.js";
 
 export default {
   props: ["colorIn", "textArea", "nowEdit", "isEditingText"],
   emits: ["colorInputFalse"],
   setup(props) {
-    // const store = useStore();
 
     const allTextColors = reactive(textColor);
     const colorPage = ref(0);
@@ -69,48 +65,19 @@ export default {
     const colorUpdater = ref("");
 
 
-    // function blurColorInput() {
-    //   console.log(1111);
-    //   if (props.textArea().id !== "root") {
-    //     const changeParameters = {
-    //       color: props.textArea().style.color,
-    //     };
-    //     const newBlessingText = getNewBlessingText(
-    //       props.textArea().id,
-    //       changeParameters
-    //     );
-
-    //     store.dispatch("blessing/editBlessingText", newBlessingText);
-    //   }
-
-    //   target.emit("colorInputFalse");
-
-    //   props.nowEdit(true, store.getters["blessing/isEditText"].editId);
-
-    //   props.textArea().focus();
-    // }
-
-    // function colorBarInput(){
-    //   window.addEventListener("pointerdown",(event)=>{
-    //     // console.log(event.target.tagName);
-    //       console.log(event.target.tagName);
-    //     if(event.target.tagName !== "DIV" || event.target.tagName !== "TEXTAREA"){
-    //       blurColorInput();
-    //     }
-    //   });
-    // }
+    function judgeShowPage(nextPage){
+        if(nextPage){
+          return colorPage.value <=1;
+        }
+          return colorPage.value >= 1;
+    }
 
     function changeTextColor(color) {
-      // props.textArea().focus();
       props.textArea().style.color = color;
     }
 
     return {
-      // blurColorInput,
-      // colorInput,
-      // showColorInput,
-      // changeColor,
-      // colorBarInput,
+      judgeShowPage,
       colorUpdater,
       changeTextColor,
       allTextColors,

@@ -1,6 +1,11 @@
 <template>
-  <div class="main_contents" >
-    <canvas id="canvas" ref="canvas" :class="{ opacity: isEditText.isEditing }" @pointerdown.prevent="blurTextArea">
+  <div class="main_contents">
+    <canvas
+      id="canvas"
+      ref="canvas"
+      :class="{ opacity: isEditText.isEditing }"
+      @pointerdown.prevent="blurTextArea"
+    >
     </canvas>
     <textarea
       class="input_text"
@@ -11,10 +16,9 @@
       @touchend="blurInput"
       @input="changeSize"
       @blur="blurInput"
+      @focus="handleFocus"
     />
-    <!-- @focus="handleFocus" -->
     <!-- @blur="blurInput" -->
-    <!-- https://source.unsplash.com/gYl-UtwNg_I/1500x1500 -->
 
     <blessing-text :canvas="canvas"></blessing-text>
 
@@ -22,7 +26,9 @@
       :class="{ hidden: !isTextMoving, tryDelete: wantDelete }"
     ></delete-text>
 
-    <background-image></background-image>
+    <background-image
+      :class="{ opacity: isEditText.isEditing }"
+    ></background-image>
   </div>
 </template>
 
@@ -33,6 +39,7 @@ import BlessingText from "./ShowBlessingtext.vue";
 import changeTextareaWidth from "../../../hooks/changeTextareaWidth.js";
 import DeleteText from "./delete/DeleteText.vue";
 import BackgroundImage from "./bgimage/BackgroundImage.vue";
+
 import "animate.css";
 export default {
   components: {
@@ -53,23 +60,7 @@ export default {
       () => store.getters["blessing/getIsTextMoving"]
     );
     const wantDelete = computed(() => store.getters["blessing/getWantDelete"]);
-    // const inputImage = computed(() => store.getters["addphoto/getInputStatus"]);
     const isEditText = computed(() => store.getters["blessing/isEditText"]);
-    // let uploaded_image = "";
-
-    // onMounted(() => {
-    //   watch(inputImage, () => {
-
-    //     if(!inputImage.value.newInput) return;
-    //     const reader = new FileReader();
-    //     reader.addEventListener("load", () => {
-    //      uploaded_image = reader.result;
-    //      canvas.value.style.backgroundImage = `url(${uploaded_image})`;
-    //     });
-    //     reader.readAsDataURL(inputImage.value.inputFile.files[0]);
-    //     store.dispatch("addphoto/tellImageInput", {newInput:false,inputFile:null});
-    //   });
-    // });
 
     async function focusTextInput() {
       await (showTextArea.value = true);
@@ -86,9 +77,6 @@ export default {
     const enterText = ref("");
 
     function blurInput(event) {
-      // if(event.target === textInput.value){
-      //   return;
-      // }
       let boolenIsEdting = false;
 
       try {
@@ -142,8 +130,9 @@ export default {
     }
 
     function changeSize() {
-      textAreaWidth.value = changeTextareaWidth(textInput);
-      textInput.value.style.width = `${changeTextareaWidth(textInput)}px`;
+      const width = changeTextareaWidth(textInput, false);
+      textAreaWidth.value = width;
+      textInput.value.style.width = `${width}px`;
     }
 
     function handleFocus() {
@@ -151,14 +140,22 @@ export default {
     }
 
     window.addEventListener("pointerdown", (e) => {
-      
-      if (e.target.className === "show_bg_image") {
-        blurTextArea();  
+  
+      if (e.target.className.split(' ')[0] === "show_bg_image") {
+        blurTextArea();
       }
     });
     function blurTextArea() {
       var field = document.createElement("input");
       field.setAttribute("type", "text");
+      Object.assign(field.style, {
+        height: ".5px",
+        width: "100%",
+        border: "none",
+        outline: "none",
+        position:"absolute"
+      });
+
       document.body.appendChild(field);
 
       setTimeout(function () {
@@ -172,10 +169,6 @@ export default {
     function setZIndex() {
       textInput.value.style.zIndex = 2147483647;
     }
-
-    // function outsideTextarea(){
-
-    // }
 
     function nowEditText(boolen, id) {
       const editTexting = {
@@ -217,6 +210,7 @@ export default {
   display: block;
   background-color: rgb(241, 204, 204);
   border-radius: 2rem;
+  transition: pointerdown 5s ease-in-out;
 }
 
 .input_text {

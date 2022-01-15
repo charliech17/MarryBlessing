@@ -8,8 +8,8 @@ function getTextWidth(text, font) {
   return metrics.width;
 }
 
-export default function changeTextareaWidth(textInput) {
-  const textInputValue = textInput.value.value;
+export default function changeTextareaWidth(textInput,isShow=true) {
+  const textInputValue = textInput.value.value||textInput.value;
   const splitText = textInputValue.split("\n");
   const eachLineTextLength = splitText.map((text) => text.length);
   const maxTextLength = Math.max(...eachLineTextLength);
@@ -20,8 +20,18 @@ export default function changeTextareaWidth(textInput) {
     document.documentElement.clientWidth ||
     document.body.clientWidth;
 
-  const fontSize = 32;
-  const textWidth = getTextWidth(maxText, `bold ${fontSize}px arial`);
+  // const fontSize = 32;
+  let getTextareaComputedStyle = null;
+  if(isShow){
+    getTextareaComputedStyle = window.getComputedStyle(textInput);
+  }else{
+    getTextareaComputedStyle = window.getComputedStyle(textInput.value)
+  }
+  
+  const  fontFamily = getTextareaComputedStyle.fontFamily;
+  const fontSize = getTextareaComputedStyle.fontSize;
+
+  const textWidth = getTextWidth(maxText, `bold ${fontSize} ${fontFamily}`);
   const finalSize =
     textWidth + 5 > htmlWidth * 0.8 ? htmlWidth * 0.8 : textWidth + 10;
 

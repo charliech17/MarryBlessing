@@ -2,6 +2,7 @@
   <textarea
     v-for="(blessing, index) in allBlessingTextAreas"
     :id="blessing.id"
+    :class="{ opacity: isEditText.isEditing }"
     :key="index"
     :value="blessing.text"
     :style="styleList(blessing.style)"
@@ -13,7 +14,9 @@
     @touchend.prevent="touchEdit($event, blessing.id)"
     @blur="blurTextArea($event, blessing.id, blessing.style)"
     @dblclick.prevent="clickEdit($event, blessing.id)"
+    @input.prevent="changeSize($event, blessing.id)"
   />
+    <!-- readonly -->
   <!-- :readonly="judgeParameter.onlyRead" -->
 </template>
 
@@ -21,13 +24,17 @@
 import { reactive, ref } from "@vue/reactivity";
 import { computed, nextTick, watch } from "@vue/runtime-core";
 import editMoveText from "../../../hooks/editMoveText.js";
+import initialValues from "./initial/initial.js";
 import { useStore } from "vuex";
+
+import changeTextareaWidth from "../../../hooks/changeTextareaWidth.js";
 
 export default {
   props: ["canvas"],
   setup(props) {
     const store = useStore();
     const allBlessingTextAreas = store.getters["blessing/getBlessingText"];
+    const isEditText = computed(() => store.getters["blessing/isEditText"]);
     const blessingTextAdded = computed(
       () => store.getters["blessing/getBlessingText"].length
     );
@@ -45,16 +52,7 @@ export default {
     });
 
     function styleList(blessingStyle) {
-      return {
-        fontSize: "2rem",
-        left: blessingStyle.left,
-        top: blessingStyle.top,
-        bottom: blessingStyle.bottom,
-        position: "absolute",
-        width: blessingStyle.width,
-        height: blessingStyle.height,
-        color: blessingStyle.color,
-      };
+      return initialValues({ isCahngeSize, blessingStyle });
     }
 
     const judgeParameter = reactive({
@@ -75,11 +73,13 @@ export default {
 
     function mouseClick(event) {
       event.target.style.resize = "both";
-      judgeParameter.mousePressed = true;
-      judgeParameter.notFocus = false;
-      judgeParameter.wantEdit = true;
+      Object.assign(judgeParameter, {
+        mousePressed: true,
+        notFocus: false,
+        wantEdit: true,
+      });
     }
-    // const { htmlWidth, htmlHeight } = getHtmlWidthAndHeight();
+
     function mouseMove(event) {
       if (judgeParameter.notFocus || judgeParameter.nowDoubleClick) {
         return;
@@ -91,19 +91,10 @@ export default {
       const canvas = props.canvas;
 
       textInputValue.style.cursor = "pointer";
-      // 扣10不太好 應該按比例去扣
-      // if (
-      //   cursorX <= textInputValue.offsetLeft + textInputValue.offsetWidth + 5 &&
-      //   cursorX > textInputValue.offsetLeft + textInputValue.offsetWidth - 10
-      // ) {
-      //   return;
-      // }
 
       if (!judgeParameter.mousePressed) {
         return;
       }
-
-      // console.log(event.touches);
 
       judgeParameter.wantEdit = false;
       judgeParameter.isMouseMove = true;
@@ -112,7 +103,6 @@ export default {
       const cavasRect = canvas.getBoundingClientRect();
 
       const { htmlWidth, htmlHeight } = getHtmlWidthAndHeight();
-      // console.log(htmlWidth, htmlHeight);
 
       textInputValue.style.left = `${
         (cursorX - textareaWidth / 2) / htmlWidth
@@ -182,19 +172,14 @@ export default {
 
     window.addEventListener("mouseup", mouseup);
 
-    function blurTextArea(event, id, blessingStyle) {
+    async function blurTextArea(event, id, blessingStyle) {
       const textArea = event.target;
 
-      textArea.style.height = "1px";
-      const finalHeight = `${event.target.scrollHeight}px`;
-
-      textArea.style.height = finalHeight;
       textArea.style.resize = "none";
       textArea.style.cursor = "pointer";
 
       const isDoubleClick = judgeParameter.nowDoubleClick;
 
-      judgeParameter.onlyRead = true;
       judgeParameter.nowDoubleClick = false;
 
       let boolenIsEdting = false;
@@ -208,21 +193,23 @@ export default {
 
       nowEditText(boolenIsEdting, id);
 
-      // console.log(blessingStyle.top);
       editMoveText(
         textArea,
         blessingStyle.top,
         blessingStyle.left,
         blessingStyle.bottom
       );
+
       if (isDoubleClick) {
         const changeParameters = {
           text: textArea.value,
           width: `${textArea.offsetWidth}px`,
-          height: finalHeight,
+          height: textArea.style.height,
           color: window.getComputedStyle(textArea).color,
         };
 
+        //沒有改變長寬寬度了
+        isCahngeSize.value = false;
         updateBlessingText(id, changeParameters);
       }
     }
@@ -256,11 +243,13 @@ export default {
         return;
       }
       nextTick(() => {
-        event.target.style.cursor = "auto";
-        judgeParameter.onlyRead = false;
-        judgeParameter.nowDoubleClick = true;
+        Object.assign(event.target.style, { cursor: "auto", opacity: "1" });
+        Object.assign(judgeParameter, {
+          nowDoubleClick: true,
+          wantEdit: false,
+        });
+
         event.target.focus();
-        judgeParameter.wantEdit = false;
         nowEditText(true, id);
       });
     }
@@ -317,6 +306,34 @@ export default {
       }
     }
 
+    const isCahngeSize = ref(false);
+    function changeSize(event, id) {
+      const textInput = event.target;
+      const textAreaWidth = `${changeTextareaWidth(textInput)}px`;
+      isCahngeSize.value = true;
+
+      Object.assign(textInput.style, {
+        width: `${textAreaWidth}`,
+        height: "1px", //because need scrollHeight
+      });
+
+      const finalHeight = `${textInput.scrollHeight}px`;
+
+      const changeParameters = {
+        text: textInput.value,
+        width: textAreaWidth,
+        height: finalHeight,
+        color: textInput.style.color,
+        // window.getComputedStyle(textInput).height
+      };
+      updateBlessingText(id, changeParameters);
+    }
+
+    // function goTop(){
+    //   window.scrollTo(0,0);
+    //   document.body.scrollTop =0;
+    // }
+
     return {
       allBlessingTextAreas,
       judgeParameter,
@@ -327,6 +344,8 @@ export default {
       blurTextArea,
       clickEdit,
       touchEdit,
+      isEditText,
+      changeSize,
     };
   },
 };
@@ -344,6 +363,9 @@ textarea {
   cursor: pointer;
   padding: 0;
   z-index: 1;
-  /* transition: all 0.3s ease-out; */
+}
+
+.opacity {
+  opacity: 0.2;
 }
 </style>

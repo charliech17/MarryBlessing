@@ -101,7 +101,7 @@ export default {
   gap: 5vw;
   background-color: rgb(59, 8, 153);
   border-radius: 1rem;
-  position: sticky;
+  transition: all 5s;
 }
 
 .edit_text_contorl button {
@@ -123,14 +123,4 @@ export default {
   background-color: #f0c5e2;
 }
 
-@keyframes editMoveUpText {
-  from {
-    top: 50%;
-    left: 50%;
-  }
-  to {
-    top: 5;
-    left: 0;
-  }
-}
 </style>
