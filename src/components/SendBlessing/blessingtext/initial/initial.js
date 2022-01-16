@@ -1,6 +1,6 @@
 //initial objects
-export default function initialShowInputsParameters({isCahngeSize,blessingStyle}){
-    if (isCahngeSize.value) {
+export default function initialShowInputsParameters({isChangeSize,blessingStyle}){
+    if (isChangeSize.value) {
         // isCahngeSize.value = false;
         return {
           fontSize: "2rem",

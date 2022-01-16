@@ -10,7 +10,13 @@ function getTextWidth(text, font) {
 
 export default function changeTextareaWidth(textInput,isShow=true) {
   const textInputValue = textInput.value.value||textInput.value;
-  const splitText = textInputValue.split("\n");
+
+  //如果是空值
+  if(textInputValue.trim()===''){
+    return 32;
+  }
+
+  const splitText = textInputValue.split("\n")||'';
   const eachLineTextLength = splitText.map((text) => text.length);
   const maxTextLength = Math.max(...eachLineTextLength);
   const maxText = splitText.find((text) => text.length === maxTextLength);

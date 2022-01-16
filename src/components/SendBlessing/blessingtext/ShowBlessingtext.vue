@@ -16,7 +16,7 @@
     @dblclick.prevent="clickEdit($event, blessing.id)"
     @input.prevent="changeSize($event, blessing.id)"
   />
-    <!-- readonly -->
+  <!-- readonly -->
   <!-- :readonly="judgeParameter.onlyRead" -->
 </template>
 
@@ -52,7 +52,7 @@ export default {
     });
 
     function styleList(blessingStyle) {
-      return initialValues({ isCahngeSize, blessingStyle });
+      return initialValues({ isChangeSize,blessingStyle });
     }
 
     const judgeParameter = reactive({
@@ -167,12 +167,11 @@ export default {
       judgeParameter.mousePressed = false;
       judgeParameter.notFocus = true;
       judgeDelete();
-      // judgeMouseMove();
     }
 
     window.addEventListener("mouseup", mouseup);
 
-    async function blurTextArea(event, id, blessingStyle) {
+    function blurTextArea(event, id, blessingStyle) {
       const textArea = event.target;
 
       textArea.style.resize = "none";
@@ -209,8 +208,16 @@ export default {
         };
 
         //沒有改變長寬寬度了
-        isCahngeSize.value = false;
+        isChangeSize.value = false;
+        textArea.classList.remove("nowEditText");
         updateBlessingText(id, changeParameters);
+
+        //是否是空值
+      if(textArea.value.trim()===''){
+        judgeParameter.deleteTextarea = [true, id];
+        judgeDelete();
+        return;
+      }
       }
     }
 
@@ -243,7 +250,7 @@ export default {
         return;
       }
       nextTick(() => {
-        Object.assign(event.target.style, { cursor: "auto", opacity: "1" });
+        Object.assign(event.target.style, { cursor: "auto" });
         Object.assign(judgeParameter, {
           nowDoubleClick: true,
           wantEdit: false,
@@ -296,35 +303,32 @@ export default {
 
     function judgeMouseMove(id, stylePosition) {
       if (judgeParameter.isMouseMove) {
-        const changeParameters = {
-          bottom: stylePosition.bottom,
-          top: stylePosition.top,
-          left: stylePosition.left,
-        };
-        updateBlessingText(id, changeParameters);
-        // judgeParameter.isMouseMove = false;
+        updateBlessingText(id, stylePosition);
       }
     }
 
-    const isCahngeSize = ref(false);
+    // const isCahngeSize = ref(false);
+    const isChangeSize = ref(false);
     function changeSize(event, id) {
       const textInput = event.target;
       const textAreaWidth = `${changeTextareaWidth(textInput)}px`;
-      isCahngeSize.value = true;
+      isChangeSize.value = true;
 
+      if(!textInput.value) return;
       Object.assign(textInput.style, {
         width: `${textAreaWidth}`,
         height: "1px", //because need scrollHeight
       });
 
       const finalHeight = `${textInput.scrollHeight}px`;
+      textInput.style.height = finalHeight;
+      
 
       const changeParameters = {
         text: textInput.value,
         width: textAreaWidth,
         height: finalHeight,
         color: textInput.style.color,
-        // window.getComputedStyle(textInput).height
       };
       updateBlessingText(id, changeParameters);
     }
@@ -340,7 +344,6 @@ export default {
       styleList,
       mouseClick,
       mouseMove,
-      mouseup,
       blurTextArea,
       clickEdit,
       touchEdit,
