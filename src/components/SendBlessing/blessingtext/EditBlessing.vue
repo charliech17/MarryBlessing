@@ -1,13 +1,14 @@
 <template>
 <transition name="edit">
       <div class="edit_text_contorl" v-if="isEditingText">
-        <base-button @pointerdown="sizeChange" disabled>大小</base-button>
+        <base-button @pointerdown="sizeChange" disabled>--</base-button>
         <base-button @pointerdown.prevent="textColor">顏色</base-button>
         <base-button @pointerdown.prevent="changeTextBackground">背景</base-button>
-        <base-button disabled>動畫</base-button>
-        <base-button disabled>字形</base-button>
+        <base-button disabled>--</base-button>
+        <base-button disabled>--</base-button>
       </div>
 </transition>
+<!-- 大小動畫字形 -->
       <color-input
         :colorIn="showColorInput"
         :textArea="getTextArea"

@@ -1,4 +1,4 @@
-<template>
+  <template>
   <textarea
     v-for="(blessing, index) in allBlessingTextAreas"
     :id="blessing.id"
@@ -11,7 +11,7 @@
     @mousemove="mouseMove($event)"
     @touchstart.prevent="mouseClick"
     @touchmove.prevent="mouseMove($event)"
-    @touchend.prevent="touchEdit($event, blessing.id)"
+    @touchend.prevent="touchEdit($event, blessing)"
     @blur="blurTextArea($event, blessing.id, blessing.style)"
     @dblclick.prevent="clickEdit($event, blessing.id)"
     @input.prevent="changeSize($event, blessing.id)"
@@ -52,7 +52,7 @@ export default {
     });
 
     function styleList(blessingStyle) {
-      return initialValues({ isChangeSize,blessingStyle });
+      return initialValues({ isChangeSize, blessingStyle });
     }
 
     const judgeParameter = reactive({
@@ -192,19 +192,18 @@ export default {
 
       nowEditText(boolenIsEdting, id);
 
-      editMoveText(
-        textArea,
-        blessingStyle.top,
-        blessingStyle.left,
-        blessingStyle.bottom
-      );
-
       if (isDoubleClick) {
+        const getComputedStyle = window.getComputedStyle(textArea);
+        // const controlColors= { ...store.getters["editText/controlColors"] } ;
+        // controlColors.colorPage = controlColors.page;
+
         const changeParameters = {
           text: textArea.value,
           width: `${textArea.offsetWidth}px`,
           height: textArea.style.height,
-          color: window.getComputedStyle(textArea).color,
+          color: getComputedStyle.color,
+          backgroundColor: getComputedStyle.backgroundColor,
+          controlColors: { ...store.getters["editText/controlColors"] },
         };
 
         //沒有改變長寬寬度了
@@ -212,12 +211,21 @@ export default {
         textArea.classList.remove("nowEditText");
         updateBlessingText(id, changeParameters);
 
+        editMoveText(
+          textArea,
+          blessingStyle.top,
+          blessingStyle.left,
+          blessingStyle.bottom
+        );
         //是否是空值
-      if(textArea.value.trim()===''){
-        judgeParameter.deleteTextarea = [true, id];
-        judgeDelete();
-        return;
-      }
+        if (textArea.value.trim() === "") {
+          judgeParameter.deleteTextarea = [true, id];
+          judgeDelete();
+          return;
+        }
+
+        //reset colorControls
+        store.dispatch("editText/resetAll");
       }
     }
 
@@ -229,7 +237,7 @@ export default {
       nowEditText(true, id);
     }
 
-    function touchEdit(event, id) {
+    function touchEdit(event, blessing) {
       judgeDelete();
 
       try {
@@ -238,9 +246,9 @@ export default {
           top: event.target.style.top,
           left: event.target.style.left,
         };
-        judgeMouseMove(id, stylePosition);
+        judgeMouseMove(blessing.id, stylePosition);
       } catch (err) {
-        nowEditText(false, id);
+        nowEditText(false, blessing.id);
       }
 
       if (!judgeParameter.wantEdit || judgeParameter.isMouseMove) {
@@ -257,7 +265,10 @@ export default {
         });
 
         event.target.focus();
-        nowEditText(true, id);
+        nowEditText(true, blessing.id);
+        // console.log(blessing.controlColors);
+        // store.dispatch('editText/getEdited',blessing.controlColors);
+        store.dispatch("editText/getEdited", blessing.controlColors);
       });
     }
 
@@ -314,7 +325,7 @@ export default {
       const textAreaWidth = `${changeTextareaWidth(textInput)}px`;
       isChangeSize.value = true;
 
-      if(!textInput.value) return;
+      if (!textInput.value) return;
       Object.assign(textInput.style, {
         width: `${textAreaWidth}`,
         height: "1px", //because need scrollHeight
@@ -322,7 +333,6 @@ export default {
 
       const finalHeight = `${textInput.scrollHeight}px`;
       textInput.style.height = finalHeight;
-      
 
       const changeParameters = {
         text: textInput.value,
@@ -366,7 +376,7 @@ textarea {
   cursor: pointer;
   padding: 0;
   z-index: 1;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   font-weight: 800;
 }
 

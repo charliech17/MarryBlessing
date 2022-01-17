@@ -1,19 +1,20 @@
 <template>
   <div
     class="color_bar"
-    v-if="colorIn && isEditingText"
-    ref="colorUpdater"
     tabindex="-1"
-  >
+    v-if="colorIn && isEditingText"
+    >
+  <!-- v-if="colorIn && isEditingText" -->
    <!-- @blur.prevent="blurColorInput($event)" -->
     <!-- @touchend="blurColorInput" -->
     <!-- @focus="colorBarInput" -->
     <div
       class="color_picker"
-      v-for="(color,index) in allTextColors[colorPage]"
+      v-for="(color,index) in allTextColors[controlColors['colorPage']]"
       :key="color"
       :style="appendColor(color)"
       @pointerdown.prevent="changeTextColor(color,index)"
+
     ></div>
     <div
       class="less_color"
@@ -33,11 +34,12 @@
 </template>
 
 <script>
-import { computed,reactive, ref } from "@vue/reactivity";
+import { computed,reactive} from "@vue/reactivity";
 import textColor from "./textColor.js";
 import { useStore } from 'vuex';
 import checkNeedDispatch from '../../../../hooks/checkNeedDispatch.js';
 import setTextBackgroundColor from './setTextBackgroundColor.js';
+// import { watch } from '@vue/runtime-core';
 
 export default {
   props: ["colorIn", "textArea", "nowEdit", "isEditingText"],
@@ -47,9 +49,7 @@ export default {
 
     const allTextColors = reactive(textColor);
     const controlColors = computed(()=>store.getters['editText/controlColors']); //,colorIndex,colorMode
-    // const {colorPage,colorMode} = reactive(controlColors.value);
-    // console.log(controlColors.value['colorPage']);
-    const colorPage = ref(0);
+    // const colorPage = ref(0);
     
 
     function appendColor(color) {
@@ -59,54 +59,43 @@ export default {
     }
 
     function changePageColor(change) {
-      colorPage.value += change;
-      // console.log(props.textArea());
-      // store.dispatch('editText/changeColorPage',change);
+      // colorPage.value += change;
       checkNeedDispatch({store,textArea:props.textArea,dispatchName:'changeColorPage',changeParameter:change});
+      // checkNeedDispatch({store,textArea:props.textArea,dispatchName:'changePage',changeParameter:change});
     }
-
-    const colorUpdater = ref("");
-
 
     function judgeShowPage(nextPage){
         if(nextPage){
-          return (colorPage.value ===1||colorPage.value ===0);
-          // return (controlColors.value['colorPage'] ===1||controlColors.value['colorPage'] ===0);
+          return (controlColors.value.colorPage ===1||controlColors.value.colorPage ===0);
         }
 
-        return (colorPage.value ===1||colorPage.value ===2);
-          // return (controlColors.value['colorPage'] === 1|| controlColors.value['colorPage'] === 2);
+        return (controlColors.value.colorPage ===1||controlColors.value.colorPage ===2);
     }
 
     function changeTextColor(color,index) {
       props.textArea().style.color = color;
-      // props.textArea().style.backgroundColor = textBackgroundColor()[controlColors.value['colorPage']][index];
-
-      //update colorIndex
-      // const changeParameters={
-      //   changeName: 'colorIndex',
-      //   changeValue:index
-      // }
-      // store.dispatch('editText/changeControlColors',changeParameters);
-      // store.dispatch('editText/changeColorIndex',index);
       checkNeedDispatch({store,textArea:props.textArea,dispatchName:'changeColorIndex',changeParameter:index});
       setTextBackgroundColor({store,getTextArea:props.textArea});
+
+      //Ui selected Color
+      // document.querySelector(`.color_bar color_picker:nth-child(${index})`).style.border = '.2rem solid black';
     }
 
 
-// function checkNeedDispatch(dispatchName,changeParameter){
-//        if(props.textArea().id==='root'){
-//          store.dispatch(`editText/${dispatchName}`,changeParameter);
-//        }
-//      }
+    // const isEditingText = computed(()=>props.isEditingText)
+    // watch(isEditingText,(isEditing)=>{
+    //   if(!isEditing){
+    //     colorPage.value = 0;
+    //   }
+    // })
+     
 
     return {
       judgeShowPage,
-      colorUpdater,
       changeTextColor,
       allTextColors,
       appendColor,
-      colorPage,
+      // colorPage,
       controlColors,
       changePageColor,
     };
@@ -124,6 +113,7 @@ export default {
 .color_bar {
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 2vw;
   padding-top: 3vw;
   gap: 3vw;
@@ -134,6 +124,7 @@ export default {
   height: 5vw;
   border-radius: 50%;
   border: 2px solid black;
+  /* box-sizing: border-box; */
 }
 
 .more_color,

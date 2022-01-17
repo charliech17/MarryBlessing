@@ -12,6 +12,13 @@ export default function setTextBackgroundColor({ store, getTextArea }) {
   const nowTextColor = textColor[colorPage][colorIndex];
   const nowBackgroundColor = textBackgroundColor[colorPage][colorIndex];
 
+  //selected color and clear last color
+  //page 也要
+  // document.body.querySelector(`.color_bar`).children.item(colorIndex).style.border = '.2rem solid';
+  // document.body.querySelector(`.color_bar`).children.item(lastSelectedIndex).style.border = '2px solid';
+  // store.dispatch('editText/updateSelectedIndex',colorIndex);
+  // console.log(colorIndex,lastSelectedIndex);
+
   switch (colorMode) {
     case 0:
       Object.assign(getTextArea().style, {

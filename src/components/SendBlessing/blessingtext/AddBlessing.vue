@@ -109,10 +109,11 @@ export default {
 
       const getComputedStyle = window.getComputedStyle(textInput.value);
       //存入BlessingText中
+      // console.log(controlColors.value);
       const saveBlessingText = {
         id: new Date().toISOString(),
         text: enterText.value,
-        controlColors: controlColors.value,
+        controlColors: JSON.parse(JSON.stringify(controlColors.value)),
         style: {
           left: 5 + `%`,
           top: `5%`,
@@ -124,14 +125,17 @@ export default {
         },
       };
 
-      store.dispatch('editText/resetAll');
       // console.log(controlColors.value);
 
       const notSavingBlessing = ["", null, undefined];
       if (!notSavingBlessing.includes(enterText.value.trim())) {
         store.dispatch("blessing/addBlessingText", saveBlessingText);
       }
+
+      store.dispatch('editText/resetAll');
       store.dispatch("blessing/isAddingText", false);
+
+      console.log(saveBlessingText.controlColors);
 
       textInput.value.style.zIndex = "auto";
 
