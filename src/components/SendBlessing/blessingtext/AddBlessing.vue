@@ -5,9 +5,9 @@
         id="canvas"
         ref="canvas"
         :class="{ opacity: isEditText.isEditing }"
-        @pointerdown.prevent="blurTextArea"
-        v-if="!isEditText.isEditing"
+        @pointerdown.prevent="mobileBlur"
       >
+        <!-- v-if="!isEditText.isEditing" -->
       </canvas>
       </transition>
       <textarea
@@ -58,12 +58,18 @@ export default {
     const canvas = ref("");
     const showTextArea = ref(false);
     const textAreaWidth = ref(20);
+
     const clickAddText = computed(() => store.getters["blessing/isAddedText"]); //ref(store.getters['blessing/isAddedText']);
     const isTextMoving = computed(
       () => store.getters["blessing/getIsTextMoving"]
     );
     const wantDelete = computed(() => store.getters["blessing/getWantDelete"]);
     const isEditText = computed(() => store.getters["blessing/isEditText"]);
+
+
+    const controlColors = computed(()=>store.getters['editText/controlColors']);
+    // console.log(controlColors.value);
+
 
     async function focusTextInput() {
       await (showTextArea.value = true);
@@ -101,18 +107,25 @@ export default {
 
       showTextArea.value = false;
 
+      const getComputedStyle = window.getComputedStyle(textInput.value);
+      //存入BlessingText中
       const saveBlessingText = {
         id: new Date().toISOString(),
         text: enterText.value,
+        controlColors: controlColors.value,
         style: {
           left: 5 + `%`,
           top: `5%`,
           bottom: 0,
           width: `${textAreaWidth.value}px`,
           height: finalHeight,
-          color: window.getComputedStyle(textInput.value).color,
+          color: getComputedStyle.color,
+          backgroundColor: getComputedStyle.backgroundColor
         },
       };
+
+      store.dispatch('editText/resetAll');
+      // console.log(controlColors.value);
 
       const notSavingBlessing = ["", null, undefined];
       if (!notSavingBlessing.includes(enterText.value.trim())) {
@@ -144,10 +157,10 @@ export default {
 
     window.addEventListener("pointerdown", (e) => {
       if (e.target.className.split(" ")[0] === "show_bg_image") {
-        blurTextArea();
+        mobileBlur();
       }
     });
-    function blurTextArea() {
+    function mobileBlur() {
       var field = document.createElement("input");
       field.setAttribute("type", "text");
       Object.assign(field.style, {
@@ -181,7 +194,7 @@ export default {
     }
 
     return {
-      blurTextArea,
+      mobileBlur,
       handleFocus,
       textInput,
       showTextArea,
@@ -271,7 +284,7 @@ export default {
 }
 
 .opacity {
-  opacity: 0.2;
+  filter: brightness(0.85);
 }
 
 .edit-enter-from {
@@ -281,8 +294,9 @@ export default {
 }
 
 .edit-leave-to {
-  opacity: 0;
+  opacity: 0.5;
   transform: translateY(50px);
+  background-color: black;
 }
 
 .edit-enter-active {
@@ -295,8 +309,9 @@ export default {
 
 .edit-enter-to,
 .edit-leave-from {
-  opacity: 1;
+  opacity: 0.5;
   transform: translateY(-10px);
+  background-color: black;
   /* transition: all 0.1s; */
 }
 </style>

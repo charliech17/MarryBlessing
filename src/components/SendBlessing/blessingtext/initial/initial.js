@@ -1,6 +1,7 @@
 //initial objects
 export default function initialShowInputsParameters({isChangeSize,blessingStyle}){
-    if (isChangeSize.value) {
+  console.log(blessingStyle);  
+  if (isChangeSize.value) {
         // isCahngeSize.value = false;
         return {
           fontSize: "2rem",
@@ -11,6 +12,7 @@ export default function initialShowInputsParameters({isChangeSize,blessingStyle}
           width: blessingStyle.width,
           height: blessingStyle.height,
           color: blessingStyle.color,
+          backgroundColor:blessingStyle.backgroundColor
         };
       } else {
         return {
@@ -22,6 +24,7 @@ export default function initialShowInputsParameters({isChangeSize,blessingStyle}
           width: blessingStyle.width,
           height: blessingStyle.height,
           color: blessingStyle.color,
+          backgroundColor:blessingStyle.backgroundColor
         };
       }
 }

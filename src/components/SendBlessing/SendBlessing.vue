@@ -35,8 +35,6 @@ export default {
       () => store.getters["blessing/isEditText"].isEditing
     );
 
-    console.log(isEditingText.value);
-
     function addText() {
       store.dispatch("blessing/isAddingText", true);
       nowEditText(true, "root");

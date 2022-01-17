@@ -39,7 +39,7 @@ export default function changeTextareaWidth(textInput,isShow=true) {
 
   const textWidth = getTextWidth(maxText, `bold ${fontSize} ${fontFamily}`);
   const finalSize =
-    textWidth + 5 > htmlWidth * 0.8 ? htmlWidth * 0.8 : textWidth + 10;
+    textWidth + 5 > htmlWidth * 0.8 ? htmlWidth * 0.8 : textWidth +(fontSize.replace('px','')/2);
 
   return finalSize;
 }

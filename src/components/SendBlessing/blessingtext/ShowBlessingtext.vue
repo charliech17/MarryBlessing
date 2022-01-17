@@ -366,9 +366,12 @@ textarea {
   cursor: pointer;
   padding: 0;
   z-index: 1;
+  border-radius: .5rem;
+  font-weight: 800;
 }
 
 .opacity {
   opacity: 0.2;
+  background-color: black;
 }
 </style>

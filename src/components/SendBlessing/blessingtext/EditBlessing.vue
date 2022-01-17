@@ -3,7 +3,7 @@
       <div class="edit_text_contorl" v-if="isEditingText">
         <base-button @pointerdown="sizeChange" disabled>大小</base-button>
         <base-button @pointerdown.prevent="textColor">顏色</base-button>
-        <base-button @pointerdown="changeTextBackground">背景</base-button>
+        <base-button @pointerdown.prevent="changeTextBackground">背景</base-button>
         <base-button disabled>動畫</base-button>
         <base-button disabled>字形</base-button>
       </div>
@@ -23,6 +23,8 @@ import { useStore } from "vuex";
 import ColorInput from "./color/ColorInput.vue";
 import { nextTick, watch } from "@vue/runtime-core";
 import editMoveText from "../../../hooks/editMoveText.js";
+import setTextBackgroundColor from './color/setTextBackgroundColor.js';
+import checkNeedDispatch from '../../../hooks/checkNeedDispatch.js'
 
 export default {
   components: {
@@ -59,7 +61,13 @@ export default {
     }
 
     function changeTextBackground() {
-      
+      // //colorMode=-1 colorMode++
+      // if(getTextArea().id === 'root'){
+      //   store.dispatch('editText/changeColorMode');
+      // }
+      // store.dispatch
+      checkNeedDispatch({store,textArea:getTextArea,dispatchName:'changeColorMode',changeParameter:null});
+      setTextBackgroundColor({store,getTextArea});
     }
 
     function nowEditText(boolen, id) {
