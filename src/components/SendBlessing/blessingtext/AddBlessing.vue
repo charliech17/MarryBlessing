@@ -221,19 +221,21 @@ export default {
   display: flex;
   justify-content: center;
   position: relative;
+  width: 100%;
 }
 
 #canvas {
   width: 100%;
-  height: 75vh;
+  /* height: 75vh; */
   display: block;
   background-color: rgb(241, 204, 204);
   border-radius: 2rem;
+  max-width: 1200px;
 }
 
 .input_text {
   position: absolute;
-  top: 10%;
+  top: 5%;
   left: 5%;
   border: none;
   outline: none;
@@ -317,5 +319,16 @@ export default {
   transform: translateY(-10px);
   background-color: black;
   /* transition: all 0.1s; */
+}
+
+@media (min-width:1200px) {
+  
+  #canvas {
+    max-height: 842px;
+    border: .3rem white solid;
+  }
+  .controls_and_contents{
+    height: auto;
+  }
 }
 </style>

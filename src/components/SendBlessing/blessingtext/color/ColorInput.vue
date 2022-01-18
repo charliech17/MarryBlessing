@@ -1,20 +1,11 @@
 <template>
-  <div
-    class="color_bar"
-    tabindex="-1"
-    v-if="colorIn && isEditingText"
-    >
-  <!-- v-if="colorIn && isEditingText" -->
-   <!-- @blur.prevent="blurColorInput($event)" -->
-    <!-- @touchend="blurColorInput" -->
-    <!-- @focus="colorBarInput" -->
+  <div class="color_bar" tabindex="-1" v-if="colorIn && isEditingText">
     <div
       class="color_picker"
-      v-for="(color,index) in allTextColors[controlColors['colorPage']]"
+      v-for="(color, index) in allTextColors[controlColors['nowColorBarPage']]"
       :key="color"
       :style="appendColor(color)"
-      @pointerdown.prevent="changeTextColor(color,index)"
-
+      @pointerdown.prevent="changeTextColor(color, index)"
     ></div>
     <div
       class="less_color"
@@ -34,12 +25,14 @@
 </template>
 
 <script>
-import { computed,reactive} from "@vue/reactivity";
+import { computed, reactive } from "@vue/reactivity";
 import textColor from "./textColor.js";
-import { useStore } from 'vuex';
-import checkNeedDispatch from '../../../../hooks/checkNeedDispatch.js';
-import setTextBackgroundColor from './setTextBackgroundColor.js';
-// import { watch } from '@vue/runtime-core';
+import { useStore } from "vuex";
+import changeControlColors from "../../../../hooks/changeControlColors.js";
+import setTextBackgroundColor from "./setTextBackgroundColor.js";
+import { nextTick, watch } from "@vue/runtime-core";
+// import { onBeforeMount, watch } from '@vue/runtime-core';
+// import { nextTick, watch } from "@vue/runtime-core";
 
 export default {
   props: ["colorIn", "textArea", "nowEdit", "isEditingText"],
@@ -48,9 +41,30 @@ export default {
     const store = useStore();
 
     const allTextColors = reactive(textColor);
-    const controlColors = computed(()=>store.getters['editText/controlColors']); //,colorIndex,colorMode
-    // const colorPage = ref(0);
-    
+    const controlColors = computed(
+      () => store.getters["editText/controlColors"]
+    );
+
+    const isEditing = computed(() => props.isEditingText);
+    const colorIn = computed(() => props.colorIn);
+
+    //initial
+    const lastSelected = { colorPage: 0, colorIndex: 1 };
+    watch(isEditing, () => {
+      if (isEditing.value && colorIn.value) {
+        nextTick(() => {
+          focusSelectedColor(true);
+        });
+      }
+    });
+
+    watch(colorIn, () => {
+      if (colorIn.value) {
+        nextTick(() => {
+          focusSelectedColor(true);
+        });
+      }
+    });
 
     function appendColor(color) {
       return {
@@ -59,36 +73,98 @@ export default {
     }
 
     function changePageColor(change) {
-      // colorPage.value += change;
-      checkNeedDispatch({store,textArea:props.textArea,dispatchName:'changeColorPage',changeParameter:change});
-      // checkNeedDispatch({store,textArea:props.textArea,dispatchName:'changePage',changeParameter:change});
+      changeControlColors({
+        store,
+        textArea: props.textArea,
+        // dispatchName: "changeColorPage",
+        dispatchName: "changeColorBarPage",
+        changeParameter: change,
+      });
+      focusSelectedColor(true);
+      // console.log(controlColors.value);
+      // const colorPage = controlColors.value.colorPage;
     }
 
-    function judgeShowPage(nextPage){
-        if(nextPage){
-          return (controlColors.value.colorPage ===1||controlColors.value.colorPage ===0);
-        }
+    function judgeShowPage(nextPage) {
+      if (nextPage) {
+        return (
+          controlColors.value.nowColorBarPage === 1 ||
+          controlColors.value.nowColorBarPage === 0
+        );
+      }
 
-        return (controlColors.value.colorPage ===1||controlColors.value.colorPage ===2);
+      return (
+        controlColors.value.nowColorBarPage === 1 ||
+        controlColors.value.nowColorBarPage === 2
+      );
     }
 
-    function changeTextColor(color,index) {
+    function changeTextColor(color, index) {
       props.textArea().style.color = color;
-      checkNeedDispatch({store,textArea:props.textArea,dispatchName:'changeColorIndex',changeParameter:index});
-      setTextBackgroundColor({store,getTextArea:props.textArea});
 
-      //Ui selected Color
-      // document.querySelector(`.color_bar color_picker:nth-child(${index})`).style.border = '.2rem solid black';
+      const changes = [
+        ["updateColorPage", controlColors.value.nowColorBarPage],
+        ["changeColorIndex", index],
+      ];
+      for (const change of changes) {
+        changeControlColors({
+          store,
+          textArea: props.textArea,
+          // dispatchName: "changeColorIndex",
+          dispatchName: change[0],
+          changeParameter: change[1],
+        });
+      }
+      console.log(controlColors.value);
+      setTextBackgroundColor({ store, getTextArea: props.textArea });
+
+      //增加現在顏色的選取
+      focusSelectedColor();
+      // console.log(controlColors.value);
     }
 
+    function focusSelectedColor(initial = false) {
+      // console.log(controlColors.value);
+      if (
+        controlColors.value.nowColorBarPage !== controlColors.value.colorPage
+      ) {
+        // console.log(1111);
+        return;
+      }
 
-    // const isEditingText = computed(()=>props.isEditingText)
-    // watch(isEditingText,(isEditing)=>{
-    //   if(!isEditing){
-    //     colorPage.value = 0;
+      const colorIndex = controlColors.value.colorIndex;
+      // console.log(colorIndex,initial);
+      nextTick(()=>{
+        document.body
+        .querySelector(`.color_bar`)
+        .children.item(colorIndex)
+        .classList.add("pickedColor");
+
+        console.log(colorIndex,lastSelected.colorIndex,initial);
+      
+      if ( (colorIndex!==lastSelected.colorIndex)) {
+        if(!initial){
+          document.body
+            .querySelector(`.color_bar`)
+            .children.item(lastSelected.colorIndex)
+            .classList.remove("pickedColor");
+        }
+      }
+        updateLastSelected();
+      });
+      
+    }
+
+    function updateLastSelected() {
+      lastSelected["colorPage"] = controlColors.value.colorPage;
+      lastSelected["colorIndex"] = controlColors.value.colorIndex;
+    }
+
+    // watch(controlColors, (newValue, oldValue) => {
+    //   if (newValue !== oldValue) {
+    //     console.log(newValue);
     //   }
-    // })
-     
+    // });
 
     return {
       judgeShowPage,
@@ -104,12 +180,6 @@ export default {
 </script>
 
 <style scoped>
-/* input[type="color"] {
-  display: block;
-  margin: 1vh auto;
-  width: 5vw;
-  height: 3vh;
-} */
 .color_bar {
   display: flex;
   justify-content: center;
@@ -144,5 +214,22 @@ export default {
 
 .less_color > div {
   background-image: url("../../../../img/beforePage.png");
+}
+
+.pickedColor {
+  border: 5px solid white;
+  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+@media (min-width: 1200px) {
+  .color_picker {
+    border: 5px solid white;
+    /* box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2); */
+    /* box-sizing: border-box; */
+  }
+  .pickedColor {
+  border: 2rem solid white;
+  box-shadow: 0 0 20px 20px rgba(0, 0, 0, 0.2);
+}
 }
 </style>

@@ -194,9 +194,6 @@ export default {
 
       if (isDoubleClick) {
         const getComputedStyle = window.getComputedStyle(textArea);
-        // const controlColors= { ...store.getters["editText/controlColors"] } ;
-        // controlColors.colorPage = controlColors.page;
-
         const changeParameters = {
           text: textArea.value,
           width: `${textArea.offsetWidth}px`,

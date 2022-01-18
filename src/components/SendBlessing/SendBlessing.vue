@@ -1,19 +1,21 @@
 <template>
-  <the-header></the-header>
-  <transition name="edit" >
-  <div class="buttons" v-if="!isEditingText">
-    <addphoto-button></addphoto-button>
-    <base-button buttonStyle="purple" @click="addText" :needImage="true"
-      >新增文字 <template #img> <img src="../../img/text.png" /> </template
-    ></base-button>
-    <base-button buttonStyle="purple" :needImage="true"
-      >上傳<template #img> <img src="../../img/upload.png" /> </template
-    ></base-button>
-  </div>
-  </transition>
-  <edit-blessing></edit-blessing>
+  <div class="controls_and_contents">
+    <transition name="edit">
+      <div class="buttons" v-if="!isEditingText">
+        <addphoto-button></addphoto-button>
+        <base-button buttonStyle="purple" @click="addText" :needImage="true"
+          >新增文字 <template #img> <img src="../../img/text.png" /> </template
+        ></base-button>
+        <base-button buttonStyle="purple" :needImage="true"
+          >上傳<template #img> <img src="../../img/upload.png" /> </template
+        ></base-button>
+      </div>
+    </transition>
 
-  <add-blessing> </add-blessing>
+    <edit-blessing class="edit_blessing"></edit-blessing>
+
+    <add-blessing class="add_blessing"> </add-blessing>
+  </div>
 </template>
 
 <script>
@@ -57,15 +59,35 @@ export default {
 </script>
 
 <style scoped>
+.controls_and_contents{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  width: 100%;
+}
+
 .buttons {
+  width: 100%;
   display: flex;
   justify-content: center;
+  flex: 0 1 auto;
+  max-width: 1200px;
+}
+
+.edit_blessing{
+  flex: 0 1 auto
+}
+
+.add_blessing{
+  flex: 1 1 auto
 }
 
 .buttons > * {
-  width: 30%;
+  width: 33.3%;
   font-size: 1.5vw;
-  margin: 1.5rem 1.5vw;
+  margin: 1rem 1rem;
 }
 
 .buttons > button img {
@@ -102,6 +124,15 @@ export default {
   transform: translateY(0);
 }
 
+@media (min-width:1200px) {
+  .controls_and_contents{
+    height: auto;
+    background-color: rgb(34, 41, 65);
+  }
+  .buttons>*{
+    border: .3rem white solid;
+  }
+}
 /* .add_photos {
   background: #350b79;
   border-radius: 1rem;

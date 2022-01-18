@@ -1,21 +1,25 @@
 <template>
-<transition name="edit">
+  <div>
+    <transition name="edit">
       <div class="edit_text_contorl" v-if="isEditingText">
         <base-button @pointerdown="sizeChange" disabled>--</base-button>
         <base-button @pointerdown.prevent="textColor">顏色</base-button>
-        <base-button @pointerdown.prevent="changeTextBackground">背景</base-button>
+        <base-button @pointerdown.prevent="changeTextBackground"
+          >背景</base-button
+        >
         <base-button disabled>--</base-button>
         <base-button disabled>--</base-button>
       </div>
-</transition>
-<!-- 大小動畫字形 -->
-      <color-input
-        :colorIn="showColorInput"
-        :textArea="getTextArea"
-        :nowEdit="nowEditText"
-        :isEditingText="isEditingText"
-        @colorInputFalse="colorInputFalse"
-      ></color-input>
+    </transition>
+    <!-- 大小動畫字形 -->
+    <color-input
+      :colorIn="showColorInput"
+      :textArea="getTextArea"
+      :nowEdit="nowEditText"
+      :isEditingText="isEditingText"
+      @colorInputFalse="colorInputFalse"
+    ></color-input>
+  </div>
 </template>
 
 <script>
@@ -24,8 +28,8 @@ import { useStore } from "vuex";
 import ColorInput from "./color/ColorInput.vue";
 import { nextTick, watch } from "@vue/runtime-core";
 import editMoveText from "../../../hooks/editMoveText.js";
-import setTextBackgroundColor from './color/setTextBackgroundColor.js';
-import checkNeedDispatch from '../../../hooks/checkNeedDispatch.js'
+import setTextBackgroundColor from "./color/setTextBackgroundColor.js";
+import changeControlColors from "../../../hooks/changeControlColors.js";
 
 export default {
   components: {
@@ -62,13 +66,13 @@ export default {
     }
 
     function changeTextBackground() {
-      // //colorMode=-1 colorMode++
-      // if(getTextArea().id === 'root'){
-      //   store.dispatch('editText/changeColorMode');
-      // }
-      // store.dispatch
-      checkNeedDispatch({store,textArea:getTextArea,dispatchName:'changeColorMode',changeParameter:null});
-      setTextBackgroundColor({store,getTextArea});
+      changeControlColors({
+        store,
+        textArea: getTextArea,
+        dispatchName: "changeColorMode",
+        changeParameter: null,
+      });
+      setTextBackgroundColor({ store, getTextArea });
     }
 
     function nowEditText(boolen, id) {
@@ -103,6 +107,7 @@ export default {
 .buttons {
   display: flex;
   justify-content: center;
+  max-width: 1200px;
 }
 
 .edit_text_contorl {
@@ -161,5 +166,4 @@ export default {
   transform: translateY(0px);
   /* transition: all 0.1s; */
 }
-
 </style>
