@@ -23,9 +23,20 @@ body {
   height: 100%;
 }
 
+.warning {
+  color: brown;
+  margin: 0;
+  text-align: end;
+  font-size: 5px;
+}
+
 @media (min-width:1200px) {
  body{
    background-color: rgb(34, 41, 65);
  }
+
+ .warning {
+    font-size: 2rem;
+  }
 }
 </style>

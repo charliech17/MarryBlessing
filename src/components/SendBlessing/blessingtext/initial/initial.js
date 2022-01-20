@@ -1,6 +1,5 @@
 //initial objects
 export default function initialShowInputsParameters({isChangeSize,blessingStyle}){
-  console.log(blessingStyle.backgroundColor)
   if (isChangeSize.value) {
         // isCahngeSize.value = false;
         return {
