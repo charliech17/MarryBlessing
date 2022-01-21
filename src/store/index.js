@@ -4,6 +4,7 @@ import navbarModule from "./module/navbar/index.js";
 import addphotoModule from "./module/addphoto/index.js";
 import editTextModule from "./module/editText/index.js";
 import authModule from "./module/auth/index.js";
+import firebaseDatabaseModule from './module/database/index.js';
 
 const store = createStore({
   modules: {
@@ -12,6 +13,7 @@ const store = createStore({
     addphoto: addphotoModule,
     editText: editTextModule,
     auth: authModule,
+    firebaseDatabase: firebaseDatabaseModule
   },
 });
 

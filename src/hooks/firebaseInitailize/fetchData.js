@@ -1,3 +1,4 @@
+import getNewEmail from '../getNewEmail.js';
 export default async function fetchDatePut({
   isHost,
   savePlace,
@@ -9,11 +10,12 @@ export default async function fetchDatePut({
     hostOrGuest = "Guest";
   }
 
+  const email =getNewEmail(store.getters["auth/allAuthInfrom"]["allAuthInfrom"].email);
   const idToken = store.getters["auth/allAuthInfrom"]["allAuthInfrom"].idToken;
-  const nowTime = getNowTime();
+  // const nowTime = getNowTime();
 
   fetch(
-    `https://marryblessing-for-vue-default-rtdb.firebaseio.com/${hostOrGuest}/${savePlace}_${nowTime}.json?auth=${idToken}`,
+    `https://marryblessing-for-vue-default-rtdb.firebaseio.com/${hostOrGuest}/${savePlace}_${email}.json?auth=${idToken}`,
     {
       method: "PUT",
       headers: {
@@ -24,17 +26,15 @@ export default async function fetchDatePut({
   );
 }
 
-function getNowTime() {
-  const nowTime = new Date().toISOString();
-  let newNowTime = "";
-  for (let i = 0; i < nowTime.length; i++) {
-    // console.log(nowTime[i]);
-    if (nowTime[i] === "." || nowTime[i] === ":" || nowTime[i] === "-") {
-      continue;
-    }
-    newNowTime += nowTime[i];
-  }
-  return newNowTime;
-}
-
-// function method/.
+// function getNewEmail(email) {
+  
+//   let newEmail = "";
+//   for (let i = 0; i < email.length; i++) {
+//     // console.log(nowTime[i]);
+//     if (email[i] === "." || email[i] === "@") {
+//       continue;
+//     }
+//     newEmail += email[i];
+//   }
+//   return newEmail;
+// }

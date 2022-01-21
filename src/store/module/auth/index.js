@@ -10,6 +10,7 @@ export default {
             localId : null,
             expiresIn : null,
             error: null,
+            email:null,
         }
     },
     mutations,

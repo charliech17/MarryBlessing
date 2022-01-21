@@ -8,18 +8,29 @@
 </template>
 
 <script>
+import { useStore } from "vuex";
+import fireBaseInit from "./hooks/firebaseInitailize/firebaeInit.js";
+import onUpdateDate from "./hooks/firebaseInitailize/onUpdateData.js";
+export default {
+  setup() {
+    // const store = useStore();
+    fireBaseInit();
+    onUpdateDate(useStore());
+  },
+};
 </script>
+  
 
 <style>
 html,
 body {
   margin: 0;
-  height: 100vh; 
+  height: 100vh;
   min-height: -webkit-fill-available;
-  transition:scroll 1s ease-in-out;
+  transition: scroll 1s ease-in-out;
 }
 
-#app{
+#app {
   height: 100%;
 }
 
@@ -30,12 +41,12 @@ body {
   font-size: 5px;
 }
 
-@media (min-width:1200px) {
- body{
-   background-color: rgb(34, 41, 65);
- }
+@media (min-width: 1200px) {
+  body {
+    background-color: rgb(34, 41, 65);
+  }
 
- .warning {
+  .warning {
     font-size: 2rem;
   }
 }

@@ -7,7 +7,13 @@ import {
 
 import fetchDatePut from "./fetchData.js";
 
-export default async function uploadToFirebase({file,store,newMarriedData,checkInfo}) {
+export default async function uploadToFirebase({
+  file,
+  store,
+  newMarriedData,
+  checkInfo,
+  router
+}) {
   const storage = getStorage();
 
   // Create the file metadata
@@ -19,14 +25,14 @@ export default async function uploadToFirebase({file,store,newMarriedData,checkI
   // Upload file and metadata to the object 'images/mountains.jpg'
   const storageRef = ref(storage, "images/" + file.name);
   const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-//   let downloadURL = null;
+  //   let downloadURL = null;
 
   // Listen for state changes, errors, and completion of the upload.
   return await uploadTask.on(
     "state_changed",
     async (snapshot) => {
       // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-    const progress =  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
       console.log("Upload is " + progress + "% done");
       switch (snapshot.state) {
         case "paused":
@@ -40,7 +46,7 @@ export default async function uploadToFirebase({file,store,newMarriedData,checkI
     async (error) => {
       // A full list of error codes is available at
       // https://firebase.google.com/docs/storage/web/handle-errors
-      checkInfo.isLoading = false
+      checkInfo.isLoading = false;
       switch (error.code) {
         case "storage/unauthorized":
           // User doesn't have permission to access the object
@@ -56,22 +62,21 @@ export default async function uploadToFirebase({file,store,newMarriedData,checkI
           break;
       }
     },
-     async() => {
+    async () => {
       // Upload completed successfully, now we can get the download URL
-     const downloadURL= await getDownloadURL(uploadTask.snapshot.ref);
-    //   .then((downloadURL) => {
-        console.log("File available at", downloadURL);
-        newMarriedData['marriedImg'] = downloadURL;
-        
+      const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+      //   .then((downloadURL) => {
+      console.log("File available at", downloadURL);
+      newMarriedData["marriedImg"] = downloadURL;
 
-        fetchDatePut({
-            isHost: true,
-            savePlace: `${newMarriedData["loginPassword"]}`,
-            saveData: newMarriedData,
-            store
-          });
-          checkInfo.isLoading = false;
+      fetchDatePut({
+        isHost: true,
+        savePlace: `${newMarriedData["loginPassword"]}`,
+        saveData: newMarriedData,
+        store,
+      });
+      checkInfo.isLoading = false;
+      router.replace('/identity/newMan');
     }
   );
-  
 }

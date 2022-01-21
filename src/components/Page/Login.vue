@@ -80,6 +80,7 @@
 import { computed, reactive, ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import getNewEmail from "../../hooks/getNewEmail.js";
 export default {
   setup() {
     const store = useStore();
@@ -95,7 +96,7 @@ export default {
       confirmInvalid: false,
       isLoading: false,
       createSuccess: false,
-      loginSuccess:false,
+      loginSuccess: false,
     });
 
     const response = computed(() => store.getters["auth/allAuthInfrom"]);
@@ -121,7 +122,7 @@ export default {
         return;
       }
 
-      if (!isLoginPage.value&&loginInfo.password.length < 6) {
+      if (!isLoginPage.value && loginInfo.password.length < 6) {
         Object.assign(loginInfo, { passwordInvalid: true, isLoading: false });
         return;
       }
@@ -133,9 +134,6 @@ export default {
         Object.assign(loginInfo, { confirmInvalid: true, isLoading: false });
         return;
       }
-
-      // const dispatchName = isLoginPage.value ? "signin" : "signup";
-      // const isSignin = dispatchName === 'signin' ? true :false;
 
       try {
         await store.dispatch(`auth/setUser`, {
@@ -158,10 +156,25 @@ export default {
       loginInfo.isLoading = false;
     }
 
-    function handleSuccess() {
 
+//檢查
+    const AllFirebasDatbase = computed(
+      () => store.getters["firebaseDatabase/getFirebaseData"]
+    );
+    const thisDatabaseEmail = computed(() =>
+      getNewEmail(store.getters["auth/allAuthInfrom"]["allAuthInfrom"].email)
+    );
+    function handleSuccess() {
       if (isLoginPage.value) {
-        loginInfo.loginSuccess = false
+        loginInfo.loginSuccess = false;
+
+        for (const database in AllFirebasDatbase.value) {
+          if (database.split("_")[1] === thisDatabaseEmail.value) {
+            router.replace("/identity/newMan");
+            return;
+          }
+        }
+
         router.replace("/identity");
         return;
       }

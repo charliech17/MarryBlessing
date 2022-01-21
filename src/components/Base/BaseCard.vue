@@ -30,6 +30,10 @@ export default {
   border-radius: 1rem;
 }
 
+/* .changeMargin{
+  margin: 0 1.5rem;
+} */
+
 .title {
   margin: 0 2rem;
   text-align: center;

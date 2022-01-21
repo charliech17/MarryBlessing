@@ -66,9 +66,10 @@
 <script>
 import { reactive } from "@vue/reactivity";
 import { useRouter } from "vue-router";
-import fireBaseInit from "../../../hooks/firebaseInitailize/firebaeInit.js";
+// import fireBaseInit from "../../../hooks/firebaseInitailize/firebaeInit.js";
 import uploadToFirebase from "../../../hooks/firebaseInitailize/upload.js";
 import fetchDatePut from "../../../hooks/firebaseInitailize/fetchData.js";
+// import onUpdateDate from '../../../hooks/firebaseInitailize/onUpdateData.js'
 import { useStore } from "vuex";
 // import "firebase/storage";
 
@@ -81,10 +82,6 @@ export default {
       router.replace("/identity");
     }
 
-    fireBaseInit();
-    // console.log(db, firebase);
-
-    // const isInValid = ref(false);
     const checkInfo = reactive({
       isInValid: false,
       isLoading: false,
@@ -124,10 +121,11 @@ export default {
           store,
         });
         checkInfo.isLoading = false;
+        router.replace('/identity/newMan');
         return;
       }
 
-      await uploadToFirebase({ file, store, newMarriedData, checkInfo });
+      await uploadToFirebase({ file, store, newMarriedData, checkInfo,router });
       //進入最終頁面(可修改資料、查看祝福牆、新增照片集、認識的經過...)
     }
 
@@ -137,7 +135,6 @@ export default {
         return;
       }
       let fileURL = URL.createObjectURL(file);
-      //   await uploadToFirebase(file,event.target.parentElement.children[2]);
       event.target.parentElement.children[2].src = fileURL;
     }
 

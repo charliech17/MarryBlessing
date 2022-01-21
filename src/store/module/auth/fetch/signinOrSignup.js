@@ -34,5 +34,6 @@ export default async function signOrSignup({context,payload}){
           idToken: responseDate.idToken,
           localId:responseDate.localId,
           expiresIn:responseDate.expiresIn,
+          email:responseDate.email
       });
 }
