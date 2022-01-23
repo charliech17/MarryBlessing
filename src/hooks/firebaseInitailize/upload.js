@@ -3,7 +3,7 @@ import {
   ref,
   uploadBytesResumable,
   getDownloadURL,
-} from "firebase/storage";
+} from "@firebase/storage";
 
 import fetchDatePut from "./fetchData.js";
 

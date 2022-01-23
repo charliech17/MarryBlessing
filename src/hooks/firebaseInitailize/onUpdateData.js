@@ -1,5 +1,5 @@
-import { getDatabase, ref, onValue } from "firebase/database";
-import { getAuth } from "firebase/auth";
+import { getDatabase, ref, onValue } from "@firebase/database";
+import { getAuth } from "@firebase/auth";
 // import { getAuth, signInAnonymously } from "firebase/auth";
 
 export default function onUpdateData(store) {
