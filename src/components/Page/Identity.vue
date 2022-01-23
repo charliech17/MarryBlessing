@@ -24,7 +24,7 @@ export default {
     }
 
     function guest() {
-      router.replace("/");
+      router.replace("/identity/guest");
     }
 
     return {

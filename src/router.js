@@ -1,11 +1,14 @@
 import {createRouter, createWebHistory} from 'vue-router';
+import { defineAsyncComponent } from 'vue';
 import Home from './components/Page/Home.vue';
-import SendBlessing from './components/SendBlessing/SendBlessing.vue';
-import Login from './components/Page/Login.vue';
-import Identity from './components/Page/Identity.vue';
-import MerryInform from './components/identity/newMan/MerryInform';
-import NewMan from './components/identity/newMan/NewMan.vue';
 
+const SendBlessing = defineAsyncComponent(()=>import('./components/SendBlessing/SendBlessing.vue'))
+const Login = defineAsyncComponent(()=>import('./components/Page/Login.vue'));
+const Identity = defineAsyncComponent(()=>import('./components/Page/Identity.vue'));
+const MerryInform = defineAsyncComponent(()=>import('./components/identity/newMan/MerryInform'));
+const NewMan = defineAsyncComponent(()=>import('./components/identity/newMan/NewMan.vue'));
+const ConfirmWedding = defineAsyncComponent(()=>import('./components/identity/guest/ConfirmWedding.vue'));
+const EnterWedding = defineAsyncComponent(()=>import('./components/identity/guest/EnterWedding.vue'));
 
 const router = createRouter({
     history: createWebHistory(),
@@ -16,6 +19,8 @@ const router = createRouter({
         {path:'/identity',component:Identity},
         {path:'/identity/inform',component:MerryInform},
         {path:'/identity/newMan',component:NewMan},
+        {path:'/identity/guest',component:ConfirmWedding},
+        {path:'/identity/wedding',component:EnterWedding},
         {path:'/',redirect: '/login'}
     ]
 });

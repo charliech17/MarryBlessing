@@ -80,7 +80,8 @@
 import { computed, reactive, ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import getNewEmail from "../../hooks/getNewEmail.js";
+// import getNewEmail from "../../hooks/getNewEmail.js";
+import getAllDatabase from "../../hooks/firebaseInitailize/getAllDatabase.js";
 export default {
   setup() {
     const store = useStore();
@@ -156,14 +157,16 @@ export default {
       loginInfo.isLoading = false;
     }
 
+    //檢查
+    // const AllFirebasDatbase = computed(
+    //   () => store.getters["firebaseDatabase/getFirebaseData"]
+    // );
+    // const thisDatabaseEmail = computed(() =>
+    //   getNewEmail(store.getters["auth/allAuthInfrom"]["allAuthInfrom"].email)
+    // );
 
-//檢查
-    const AllFirebasDatbase = computed(
-      () => store.getters["firebaseDatabase/getFirebaseData"]
-    );
-    const thisDatabaseEmail = computed(() =>
-      getNewEmail(store.getters["auth/allAuthInfrom"]["allAuthInfrom"].email)
-    );
+    const { AllFirebasDatbase, thisDatabaseEmail } = getAllDatabase(store);
+
     function handleSuccess() {
       if (isLoginPage.value) {
         loginInfo.loginSuccess = false;

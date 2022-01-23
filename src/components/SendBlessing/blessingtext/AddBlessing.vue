@@ -7,7 +7,6 @@
         :class="{ opacity: isEditText.isEditing }"
         @pointerdown.prevent="mobileBlur"
       >
-        <!-- v-if="!isEditText.isEditing" -->
       </canvas>
       </transition>
       <textarea
@@ -21,7 +20,6 @@
         @blur="blurInput"
         @focus="handleFocus"
       />
-      <!-- @blur="blurInput" -->
 
       <blessing-text :canvas="canvas"></blessing-text>
 
