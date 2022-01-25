@@ -1,9 +1,9 @@
 <template>
   <base-dialog
-    :show="response['allAuthInfrom'].error !== null"
+    :show="response['allAuthInform'].error !== null"
     title="Error"
     @close="handleError"
-    >{{ response["allAuthInfrom"].error }}</base-dialog
+    >{{ response["allAuthInform"].error }}</base-dialog
   >
   <base-dialog
     :show="loginInfo.createSuccess"
@@ -58,8 +58,8 @@
         />
       </div>
       <p class="warning" v-if="loginInfo.confirmInvalid">密碼不相同</p>
-      <p class="warning" v-if="response['allAuthInfrom'].error">
-        {{ response["allAuthInfrom"].error }}
+      <p class="warning" v-if="response['allAuthInform'].error">
+        {{ response["allAuthInform"].error }}
       </p>
 
       <p v-if="isLoginPage" class="sweet_inform">
@@ -81,7 +81,7 @@ import { computed, reactive, ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 // import getNewEmail from "../../hooks/getNewEmail.js";
-import getAllDatabase from "../../hooks/firebaseInitailize/getAllDatabase.js";
+import getAllDatabase from "../../hooks/firebase/getAllDatabase.js";
 export default {
   setup() {
     const store = useStore();
@@ -100,8 +100,8 @@ export default {
       loginSuccess: false,
     });
 
-    const response = computed(() => store.getters["auth/allAuthInfrom"]);
-    console.log(response.value["allAuthInfrom"]);
+    const response = computed(() => store.getters["auth/allAuthInform"]);
+    console.log(response.value["allAuthInform"]);
 
     function goToPage() {
       isLoginPage.value = !isLoginPage.value;
@@ -146,7 +146,7 @@ export default {
         console.log(err);
       }
 
-      if (response.value["allAuthInfrom"].error === null) {
+      if (response.value["allAuthInform"].error === null) {
         if (isLoginPage.value) {
           loginInfo.loginSuccess = true;
         } else {
@@ -158,12 +158,6 @@ export default {
     }
 
     //檢查
-    // const AllFirebasDatbase = computed(
-    //   () => store.getters["firebaseDatabase/getFirebaseData"]
-    // );
-    // const thisDatabaseEmail = computed(() =>
-    //   getNewEmail(store.getters["auth/allAuthInfrom"]["allAuthInfrom"].email)
-    // );
 
     const { AllFirebasDatbase, thisDatabaseEmail } = getAllDatabase(store);
 
@@ -173,6 +167,10 @@ export default {
 
         for (const database in AllFirebasDatbase.value) {
           if (database.split("_")[1] === thisDatabaseEmail.value) {
+            store.dispatch('auth/updateState',{name:'isNewman',value:true});
+            //存入localStorage
+            localStorage['isNewman'] = true;
+
             router.replace("/identity/newMan");
             return;
           }

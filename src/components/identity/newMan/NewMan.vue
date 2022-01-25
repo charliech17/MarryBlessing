@@ -43,6 +43,7 @@ export default {
     //若有填入資料，會更新AllDatabase
     try {
       watch(AllFirebasDatbase, () => {
+        //getEmail
         getThisDataBase();
       });
     } catch (err) {
@@ -56,7 +57,7 @@ export default {
 
     function getThisDataBase() {
       const thisDatabaseEmail = computed(() =>
-        getNewEmail(store.getters["auth/allAuthInfrom"]["allAuthInfrom"].email)
+        getNewEmail(store.getters["auth/allAuthInform"]["allAuthInform"].email)
       );
       for (const database in AllFirebasDatbase.value) {
         if (database.split("_")[1] === thisDatabaseEmail.value) {
@@ -79,7 +80,7 @@ export default {
   background-size: cover;
 }
 
- .buttons {
+.buttons {
   text-align: center;
   padding: 1.2rem 0;
 }

@@ -2,7 +2,7 @@ import { initializeApp } from "@firebase/app";
 
 
 export default function firebaseInit() {
-  console.log(true,process.env.VUE_APP_FIREBASE_API_KEY);
+  // console.log(true,process.env.VUE_APP_FIREBASE_API_KEY);
   const firebaseConfig = {
     apiKey: process.env.VUE_APP_FIREBASE_API_KEY, //"AIzaSyC-VFrh3xJcmAE4OoVt_71lg3gR5xzKM7Y",
     authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN, //"marryblessing-for-vue.firebaseapp.com",

@@ -7,4 +7,16 @@ export default {
   updateError(context,payload){
     context.commit('updateError',payload);
   },
+  updateSigninState(context,payload){
+    context.commit('updateSigninState',payload);
+  },
+  updateEmail(context,payload){
+    context.commit('updateEmail',payload);
+  },
+  updateState(context,payload){
+    context.commit('updateState',payload);
+  },
+  resetState(context){
+    context.commit('resetState');
+  }
 };

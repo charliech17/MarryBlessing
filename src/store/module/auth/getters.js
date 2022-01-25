@@ -1,7 +1,7 @@
 export default{
-    allAuthInfrom(state){
+    allAuthInform(state){
         return {
-            allAuthInfrom:state
+            allAuthInform:state
         }
     }
 }

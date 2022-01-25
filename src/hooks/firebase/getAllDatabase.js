@@ -5,7 +5,7 @@ export default function getAllDatabase(store){
         () => store.getters["firebaseDatabase/getFirebaseData"]
       );
       const thisDatabaseEmail = computed(() =>
-      getNewEmail(store.getters["auth/allAuthInfrom"]["allAuthInfrom"].email)
+      getNewEmail(store.getters["auth/allAuthInform"]["allAuthInform"].email)
     );
 
     return {AllFirebasDatbase,thisDatabaseEmail};

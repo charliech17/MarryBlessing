@@ -67,8 +67,8 @@
 import { reactive } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 // import fireBaseInit from "../../../hooks/firebaseInitailize/firebaeInit.js";
-import uploadToFirebase from "../../../hooks/firebaseInitailize/upload.js";
-import fetchDatePut from "../../../hooks/firebaseInitailize/fetchData.js";
+import uploadToFirebase from "../../../hooks/firebase/upload.js";
+import fetchDatePut from "../../../hooks/firebase/fetchData.js";
 // import onUpdateDate from '../../../hooks/firebaseInitailize/onUpdateData.js'
 import { useStore } from "vuex";
 // import "firebase/storage";
@@ -121,6 +121,11 @@ export default {
           store,
         });
         checkInfo.isLoading = false;
+
+        //切換navbar內容
+        store.dispatch('auth/updateState',{name:'isNewman',value:true});
+        store.dispatch('auth/updateState',{name:'isGuest',value:false});
+
         router.replace('/identity/newMan');
         return;
       }

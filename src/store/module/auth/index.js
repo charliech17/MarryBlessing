@@ -11,6 +11,9 @@ export default {
             expiresIn : null,
             error: null,
             email:null,
+            isLogin: false,
+            isNewman: localStorage['isNewman']||false,
+            isGuest: localStorage['isGuest']||false
         }
     },
     mutations,

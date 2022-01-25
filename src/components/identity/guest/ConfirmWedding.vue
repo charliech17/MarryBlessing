@@ -21,7 +21,7 @@
 <script>
 import { ref } from "@vue/reactivity";
 import { useStore } from "vuex";
-import getAllDatabase from "../../../hooks/firebaseInitailize/getAllDatabase.js";
+import getAllDatabase from "../../../hooks/firebase/getAllDatabase.js";
 import { useRouter } from 'vue-router';
 export default {
   setup() {
@@ -32,7 +32,10 @@ export default {
     const matchWedding = ref([]);
 
     function findWedding() {
-      // console.log(AllFirebasDatbase.value.);
+      
+      //reset matchWedding
+      matchWedding.value = [];
+
       for (const database in AllFirebasDatbase.value) {
         if (
           database.split("_")[0] ===
@@ -45,9 +48,18 @@ export default {
     }
 
     function enterWedding(thisWedding) {
+      
+      //存入目前的state 及 localStorage
       store.dispatch('firebaseDatabase/updateSelectedDatabase',thisWedding);
-      router.push('/identity/wedding');
-      // console.log(store.getters["firebaseDatabase/getSelectedDatabase"]);
+      store.dispatch('auth/updateState',{name:'isGuest',value:true});
+
+      // console.log(typeof thisWedding);
+      localStorage['selectedWedding'] =  JSON.stringify(thisWedding);
+      localStorage['isGuest'] =  true;
+      
+      //前往別人的婚禮
+      router.replace('/identity/wedding');
+      
     }
 
     function showImg(imgSrc) {
@@ -112,6 +124,7 @@ li {
 
 .input_button > input {
   width: 40%;
+  border:1px solid black
 }
 
 .weddingImg {

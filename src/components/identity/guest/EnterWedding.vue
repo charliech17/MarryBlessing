@@ -37,6 +37,10 @@ export default {
       () => store.getters["firebaseDatabase/getSelectedDatabase"]
     );
 
+     if(typeof thisDatabase.value === 'string'){
+        store.dispatch('firebaseDatabase/updateSelectedDatabase',JSON.parse(thisDatabase.value));
+     }
+
     function sendBlessing(){
       router.push('/blessing');
     }
