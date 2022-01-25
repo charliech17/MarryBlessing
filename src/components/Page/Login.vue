@@ -164,6 +164,7 @@ export default {
     function handleSuccess() {
       if (isLoginPage.value) {
         loginInfo.loginSuccess = false;
+        localStorage['idToken'] =response.value["allAuthInform"].idToken ;
 
         for (const database in AllFirebasDatbase.value) {
           if (database.split("_")[1] === thisDatabaseEmail.value) {

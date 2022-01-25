@@ -13,9 +13,11 @@ export default function signout({router,store}) {
 
       //重設auth 和 lcoalStorage
       store.dispatch('auth/resetState');
+
       localStorage.removeItem('isNewman');
       localStorage.removeItem('selectedWedding');
       localStorage.removeItem('isGuest');
+      localStorage.removeItem('idToken');
 
       console.log("sign out!!");
     })

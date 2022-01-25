@@ -21,7 +21,7 @@ const router = createRouter({
         {path:'/identity/newMan',component:NewMan},
         {path:'/identity/guest',component:ConfirmWedding},
         {path:'/identity/wedding',component:EnterWedding},
-        {path:'/',redirect: '/login'}
+        {path:'/',redirect: '/home'}
     ]
 });
 

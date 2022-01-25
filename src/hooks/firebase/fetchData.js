@@ -9,9 +9,9 @@ export default async function fetchDatePut({
   if (!isHost) {
     hostOrGuest = "Guest";
   }
-
-  const email =getNewEmail(store.getters["auth/allAuthInfrom"]["allAuthInfrom"].email);
-  const idToken = store.getters["auth/allAuthInfrom"]["allAuthInfrom"].idToken;
+  
+  const email =getNewEmail(store.getters["auth/allAuthInform"]["allAuthInform"].email);
+  const idToken = store.getters["auth/allAuthInform"]["allAuthInform"].idToken;
   // const nowTime = getNowTime();
 
   fetch(

@@ -12,6 +12,7 @@ export default function isSignIn(store) {
       localStorage.removeItem('isNewman');
       localStorage.removeItem('selectedWedding');
       localStorage.removeItem('isGuest');
+      localStorage.removeItem('idToken');
     }
   });
 }

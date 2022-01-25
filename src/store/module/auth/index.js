@@ -6,7 +6,7 @@ export default {
     namespaced:true,
     state(){
         return{
-            idToken : null,
+            idToken : localStorage['idToken']||null,
             localId : null,
             expiresIn : null,
             error: null,

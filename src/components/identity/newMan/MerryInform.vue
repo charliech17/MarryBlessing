@@ -79,6 +79,10 @@ export default {
     const store = useStore();
     let file = null;
     function reset() {
+      //將localStorage 移除
+      localStorage.removeItem('isGuest');
+      store.dispatch('auth/updateState',{name:'isGuest',value:false});
+
       router.replace("/identity");
     }
 
