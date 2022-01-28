@@ -54,7 +54,7 @@ export default {
     });
 
     const afterLoginPage = {
-      newman: ["/identity/newMan", "", "", "", "/identity/guest"],
+      newman: ["/newMan/yourwedding", "/newMan/changeInforms", "", "", "/identity/guest"],
       guest: ["/identity/wedding", "/blessing", "", "/identity/guest","/identity/inform"],
     };
 

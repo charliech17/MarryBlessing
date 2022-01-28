@@ -14,10 +14,16 @@ export default function signout({router,store}) {
       //重設auth 和 lcoalStorage
       store.dispatch('auth/resetState');
 
+      //重設thisWedding 和 selected wedding
+      store.dispatch('firebaseDatabase/resetWedding');
+      //在頁面中載入時 用local storage
+
       localStorage.removeItem('isNewman');
       localStorage.removeItem('selectedWedding');
       localStorage.removeItem('isGuest');
       localStorage.removeItem('idToken');
+      localStorage.removeItem('yourWeddingDatabase');
+      localStorage.removeItem('email');
 
       console.log("sign out!!");
     })

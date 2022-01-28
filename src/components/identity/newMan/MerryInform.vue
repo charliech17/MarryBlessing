@@ -160,7 +160,7 @@ export default {
 
 <style scoped>
 .outer_background {
-  height: 100%;
+  min-height: 100%;
   /* background-color: black; */
   background-image: url("../../../img/identity/inform.jpg");
   background-size: cover;

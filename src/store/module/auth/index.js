@@ -10,7 +10,7 @@ export default {
             localId : null,
             expiresIn : null,
             error: null,
-            email:null,
+            email:localStorage['email']||null,
             isLogin: false,
             isNewman: localStorage['isNewman']||false,
             isGuest: localStorage['isGuest']||false

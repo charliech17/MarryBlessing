@@ -1,74 +1,45 @@
 <template>
   <div class="outer_background">
-    <div class="buttons">
-      <!-- <button>更改資料</button>
-      <button>進入祝福牆</button>
-      <button>增加照片</button> -->
-      <base-button class="purple">婚禮資訊</base-button>
-      <base-button class="purple">更改資料</base-button>
-      <base-button class="purple">查看祝福牆</base-button>
-      <base-button class="purple">增加照片</base-button>
-    </div>
-    <base-dialog :show="!thisDatabase" fixed title="Fetch data...">
-      <base-spinner></base-spinner>
-    </base-dialog>
-    <base-card inputTitle="婚禮資訊" v-if="thisDatabase">
-      <div class="newManName">
-        <span>新郎: {{ thisDatabase.bridegroomName }} </span>
-        <span>新娘: {{ thisDatabase.brideName }}</span>
+      <div class="buttons">
+        <base-button class="purple" @pointerdown.prevent="gotoPage(0)"
+          >婚禮資訊</base-button
+        >
+        <base-button class="purple" @pointerdown.prevent="gotoPage(1)"
+          >更改資料</base-button
+        >
+        <base-button class="purple" @pointerdown.prevent="gotoPage(2)"
+          >查看祝福牆</base-button
+        >
+        <base-button class="purple" @pointerdown.prevent="gotoPage(3)"
+          >增加照片</base-button
+        >
       </div>
-      <h3>日期: {{ thisDatabase.date }}</h3>
-      <h3>時間: {{ thisDatabase.startTime }} ~ {{ thisDatabase.endTime }}</h3>
-      <h3>地點: {{ thisDatabase.place }}</h3>
-      <h3>登入碼 {{ thisDatabase.loginPassword }}</h3>
-      <img :src="thisDatabase.marriedImg" />
-    </base-card>
-  </div>
+
+      <router-view></router-view>
+    </div>
 </template>
 
 <script>
-import { computed, ref } from "@vue/reactivity";
-import { useStore } from "vuex";
-import { nextTick, watch } from "@vue/runtime-core";
-import getNewEmail from "../../../hooks/getNewEmail.js";
+// import { ref } from "@vue/reactivity";
+import { useRouter } from "vue-router";
 export default {
   setup() {
-    const store = useStore();
+    const routerLink = ["/newMan/yourwedding", "/newMan/changeInforms"];
 
-    const AllFirebasDatbase = computed(
-      () => store.getters["firebaseDatabase/getFirebaseData"]
-    );
-    let thisDatabase = ref(null);
+    // function getThisDatabase(thisDb) {
+    //   thisDatabase.value = thisDb;
+    // }
 
-    //若有填入資料，會更新AllDatabase
-    try {
-      watch(AllFirebasDatbase, () => {
-        //getEmail
-        getThisDataBase();
-      });
-    } catch (err) {
-      console.log(err);
-    }
-
-    //若沒有填入資料，直接進入database
-    nextTick(() => {
-      getThisDataBase();
-    });
-
-    function getThisDataBase() {
-      const thisDatabaseEmail = computed(() =>
-        getNewEmail(store.getters["auth/allAuthInform"]["allAuthInform"].email)
-      );
-      for (const database in AllFirebasDatbase.value) {
-        if (database.split("_")[1] === thisDatabaseEmail.value) {
-          thisDatabase.value = AllFirebasDatbase.value[database];
-          break;
-        }
-      }
+    const router = useRouter();
+    function gotoPage(number) {
+      // console.log(routerLink[number],router);
+      router.push(routerLink[number]);
     }
 
     return {
-      thisDatabase,
+      // thisDatabase,
+      // getThisDatabase,
+      gotoPage,
     };
   },
 };
@@ -77,8 +48,14 @@ export default {
 <style scoped>
 .outer_background {
   background-image: url("../../../img/identity/inform.jpg");
+  /* height: 100%; */
+  min-height: 100%;
   background-size: cover;
 }
+
+/* .inner_background{
+  height: 120%;
+} */
 
 .buttons {
   text-align: center;
@@ -92,7 +69,7 @@ export default {
   box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
 }
 
-.inner_contents {
+/* .inner_contents {
   margin: 1.5rem;
 }
 
@@ -100,8 +77,8 @@ img {
   width: 100%;
   border-radius: 1rem;
   box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
-}
-.newManName {
+} */
+/* .newManName {
   display: flex;
   justify-content: center;
   gap: 2rem;
@@ -115,5 +92,5 @@ img {
   border-radius: 0.5rem;
   font-weight: 900;
   padding: 0.5rem;
-}
+} */
 </style>

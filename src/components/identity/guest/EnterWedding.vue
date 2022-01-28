@@ -68,7 +68,7 @@ export default {
 .background {
   background-image: url("../../../img/identity/inform.jpg");
   background-size: cover;
-  height: 100%;
+  min-height: 100%;
   position: relative;
 }
 

@@ -149,6 +149,7 @@ export default {
       if (response.value["allAuthInform"].error === null) {
         if (isLoginPage.value) {
           loginInfo.loginSuccess = true;
+          localStorage['email'] = loginInfo.account;
         } else {
           loginInfo.createSuccess = true;
         }
@@ -172,7 +173,7 @@ export default {
             //存入localStorage
             localStorage['isNewman'] = true;
 
-            router.replace("/identity/newMan");
+            router.replace("/newMan/yourwedding");
             return;
           }
         }

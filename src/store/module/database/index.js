@@ -4,6 +4,7 @@ export default {
     return {
       firebaseData: null,
       selectedDatabase:localStorage['selectedWedding']|| null, //JSON.parse(localStorage['selectedWedding']) ||
+      yourWeddingDatabase:localStorage['yourWeddingDatabase']||null
     };
   },
   mutations: {
@@ -13,6 +14,13 @@ export default {
     updateSelectedDatabase(state, payload) {
       state.selectedDatabase = payload;
     },
+    updateYourWeddingDatabase(state,payload){
+      state.yourWeddingDatabase = payload;
+    },
+    resetWedding(state){
+      state.selectedDatabase = null;
+      state.yourWeddingDatabase = null;
+    }
   },
   actions: {
     updateFirebaseDatabase(context, payload) {
@@ -21,6 +29,12 @@ export default {
     updateSelectedDatabase(context, payload) {
       context.commit("updateSelectedDatabase", payload);
     },
+    updateYourWeddingDatabase(context,payload){
+      context.commit("updateYourWeddingDatabase",payload);
+    },
+    resetWedding(context){
+      context.commit("resetWedding");
+    }
   },
   getters: {
     getFirebaseData(state) {
@@ -29,5 +43,8 @@ export default {
     getSelectedDatabase(state) {
       return state.selectedDatabase;
     },
+    getYourWeddingDatabase(state){
+      return state.yourWeddingDatabase;
+    }
   },
 };
