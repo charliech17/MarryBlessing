@@ -130,7 +130,7 @@ export default {
         store.dispatch('auth/updateState',{name:'isNewman',value:true});
         store.dispatch('auth/updateState',{name:'isGuest',value:false});
 
-        router.replace('/identity/newMan');
+        router.replace('/newMan/yourwedding');
         return;
       }
 

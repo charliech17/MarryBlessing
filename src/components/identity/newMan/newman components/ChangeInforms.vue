@@ -56,7 +56,8 @@
 <script>
 import { computed, reactive } from "@vue/reactivity";
 import { useStore } from "vuex";
-// import uploadToFirebase from "../../../../hooks/firebase/upload.js";
+import uploadToFirebase from "../../../../hooks/firebase/upload.js";
+import deleteStorageItems from "../../../../hooks/firebase/deleteStorage.js";
 import fetchDatePut from "../../../../hooks/firebase/fetchData.js";
 import { useRouter } from "vue-router";
 import { nextTick } from "@vue/runtime-core";
@@ -73,12 +74,12 @@ export default {
 
     nextTick(() => {
       // console.log(yourWeddingData.value);
-        let finalSelectedWedding = yourWeddingData.value;
+      let finalSelectedWedding = yourWeddingData.value;
       if (typeof yourWeddingData.value === "string") {
         finalSelectedWedding = JSON.parse(yourWeddingData.value);
       }
-      
-      if(!finalSelectedWedding){
+
+      if (!finalSelectedWedding) {
         finalSelectedWedding = JSON.parse(localStorage["yourWeddingDatabase"]);
       }
 
@@ -141,31 +142,48 @@ export default {
       }
 
       //有更新圖片
-      if (oldValues.imgSrc !== document.getElementById("weddingImg").src) { //newMarriedData["marriedImg"]
+      if (oldValues.imgSrc !== document.getElementById("weddingImg").src) {
+        //newMarriedData["marriedImg"]
         //delete old image
-        console.log(oldValues.imgSrc,newMarriedData["marriedImg"]);
+        // console.log('delete image!!!!!!!');
+        await deleteStorageItems(oldValues.imgSrc);
         // upload new Image
+        await uploadToFirebase({
+          file,
+          store,
+          newMarriedData,
+          checkInfo,
+          router,
+        });
       }
       //無更新圖片
-      else{
+      else {
         newMarriedData["marriedImg"] = oldValues.imgSrc;
         // console.log(newMarriedData["loginPassword"]);
         await fetchDatePut({
-        isHost: true,
-        savePlace: `${newMarriedData["loginPassword"]}`,
-        saveData: newMarriedData,
-        store,
+          isHost: true,
+          savePlace: `${newMarriedData["loginPassword"]}`,
+          saveData: newMarriedData,
+          store,
         });
+
+        checkInfo.isLoading = false;
+        router.replace("/newMan/yourwedding");
       }
 
       //檢查有無更新，若有則刪除原本資料
       if (oldValues.password !== newMarriedData["loginPassword"]) {
         //刪除
-        await fetchDatePut({ remove: true,store,savePlace:oldValues.password,isHost:true });
+        await fetchDatePut({
+          remove: true,
+          store,
+          savePlace: oldValues.password,
+          isHost: true,
+        });
       }
 
-      checkInfo.isLoading = false;
-      router.replace('/newMan/yourwedding');
+      // checkInfo.isLoading = false;
+      // router.replace('/newMan/yourwedding');
       // location.reload();
       return;
     }

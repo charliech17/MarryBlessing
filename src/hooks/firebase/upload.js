@@ -12,7 +12,7 @@ export default async function uploadToFirebase({
   store,
   newMarriedData,
   checkInfo,
-  router
+  router,
 }) {
   const storage = getStorage();
 
@@ -65,8 +65,8 @@ export default async function uploadToFirebase({
     async () => {
       // Upload completed successfully, now we can get the download URL
       const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-      //   .then((downloadURL) => {
-      console.log("File available at", downloadURL);
+      
+      // console.log("File available at", downloadURL);
       newMarriedData["marriedImg"] = downloadURL;
 
       fetchDatePut({
@@ -76,7 +76,7 @@ export default async function uploadToFirebase({
         store,
       });
       checkInfo.isLoading = false;
-      router.replace('/identity/newMan');
+      router.replace('/newMan/yourwedding');
     }
   );
 }
