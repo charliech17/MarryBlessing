@@ -1,7 +1,7 @@
 <template>
-  <base-dialog :show="isLoading" fixed title="fetching...">
+  <!-- <base-dialog :show="isLoading" fixed title="fetching...">
     <base-spinner></base-spinner>
-  </base-dialog>
+  </base-dialog> -->
   <div class="main_contents">
     <div class="show_chats">
       <div v-for="(message, index) in chatStore[0]" :key="index">
@@ -48,6 +48,11 @@ export default {
     const inputContents = ref("");
 
     const domElement = {};
+    nextTick(() => {
+      domElement.showChats = document.querySelector(".show_chats");
+      domElement.textArea = document.querySelector(".inputs>textarea");
+    });
+
 
     //若載入完成移動到底端
     watch(chatStore, () => {
@@ -63,11 +68,7 @@ export default {
 
     onUpdateChats({ guestEmail, hostEmail: sendWeddingEmail, store });
 
-    nextTick(() => {
-      domElement.showChats = document.querySelector(".show_chats");
-      domElement.textArea = document.querySelector(".inputs>textarea");
-    });
-
+    
     function inputChats() {
 
       //把chat upload到firebase
