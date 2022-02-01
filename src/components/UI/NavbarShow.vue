@@ -55,7 +55,7 @@ export default {
 
     const afterLoginPage = {
       newman: ["/newMan/yourwedding", "/newMan/changeInforms", "", "", "/identity/guest"],
-      guest: ["/identity/wedding", "/blessing", "", "/identity/guest","/identity/inform"],
+      guest: ["/guest/weddingInform", "/blessing", "", "/identity/guest","/identity/inform"],
     };
 
     const router = useRouter();

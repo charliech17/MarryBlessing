@@ -80,8 +80,8 @@ export default {
     let file = null;
     function reset() {
       //將localStorage 移除
-      localStorage.removeItem('isGuest');
-      store.dispatch('auth/updateState',{name:'isGuest',value:false});
+      localStorage.removeItem("isGuest");
+      store.dispatch("auth/updateState", { name: "isGuest", value: false });
 
       router.replace("/identity");
     }
@@ -127,14 +127,25 @@ export default {
         checkInfo.isLoading = false;
 
         //切換navbar內容
-        store.dispatch('auth/updateState',{name:'isNewman',value:true});
-        store.dispatch('auth/updateState',{name:'isGuest',value:false});
+        // store.dispatch('auth/updateState',{name:'isNewman',value:true});
+        // store.dispatch('auth/updateState',{name:'isGuest',value:false});
 
-        router.replace('/newMan/yourwedding');
+        router.replace("/newMan/yourwedding");
         return;
+      } else {
+        await uploadToFirebase({
+          file,
+          store,
+          newMarriedData,
+          checkInfo,
+          router,
+        });
       }
 
-      await uploadToFirebase({ file, store, newMarriedData, checkInfo,router });
+      //切換navbar內容
+      store.dispatch("auth/updateState", { name: "isNewman", value: true });
+      store.dispatch("auth/updateState", { name: "isGuest", value: false });
+
       //進入最終頁面(可修改資料、查看祝福牆、新增照片集、認識的經過...)
     }
 
@@ -160,13 +171,15 @@ export default {
 
 <style scoped>
 .outer_background {
-  min-height: 100%;
+  min-height: 90%;
   /* background-color: black; */
   background-image: url("../../../img/identity/inform.jpg");
   background-size: cover;
   background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
 .name_labels {
   text-align: center;
   margin-top: 0.5rem;

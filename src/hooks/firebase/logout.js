@@ -24,6 +24,7 @@ export default function signout({router,store}) {
       localStorage.removeItem('idToken');
       localStorage.removeItem('yourWeddingDatabase');
       localStorage.removeItem('email');
+      localStorage.removeItem('selectedWeddingEmail');
 
       console.log("sign out!!");
     })

@@ -1,4 +1,7 @@
 <template>
+  <base-dialog :show="checkInfo.isLoading" fixed title="updating...">
+    <base-spinner></base-spinner>
+  </base-dialog>
   <base-card inputTitle="更改婚禮資訊">
     <form @submit.prevent="submitForm">
       <div class="name_labels">
@@ -154,6 +157,7 @@ export default {
           newMarriedData,
           checkInfo,
           router,
+          reload:true
         });
       }
       //無更新圖片

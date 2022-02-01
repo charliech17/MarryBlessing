@@ -11,6 +11,8 @@ const ConfirmWedding = defineAsyncComponent(()=>import('./components/identity/gu
 const EnterWedding = defineAsyncComponent(()=>import('./components/identity/guest/EnterWedding.vue'));
 const YourWedding = defineAsyncComponent(()=>import('./components/identity/newMan/newman components/YourWedding.vue'));
 const ChangeInforms = defineAsyncComponent(()=>import('./components/identity/newMan/newman components/ChangeInforms.vue'));
+const WeddingInform = defineAsyncComponent(()=>import('./components/identity/guest/guest components/OtherWedding.vue'));
+const ChatWedding = defineAsyncComponent(()=>import('./components/identity/guest/guest components/ChatWedding.vue'));
 
 const router = createRouter({
     history: createWebHistory(),
@@ -22,10 +24,13 @@ const router = createRouter({
         {path:'/identity/inform',component:MerryInform},
         {path:'/identity/newMan',component:NewMan, children:[
             {path:'/newMan/yourwedding',component:YourWedding},
-            {path:'/newMan/changeInforms',component:ChangeInforms}
+            {path:'/newMan/changeInforms',component:ChangeInforms},
         ]},
         {path:'/identity/guest',component:ConfirmWedding},
-        {path:'/identity/wedding',component:EnterWedding},
+        {path:'/guest/wedding',component:EnterWedding,children:[
+            {path:'/guest/weddingInform',component: WeddingInform},
+            {path:'/guest/chat',component:ChatWedding }
+        ]},
         {path:'/',redirect: '/home'}
     ]
 });

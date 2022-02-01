@@ -7,7 +7,7 @@
         <button @pointerdown.prevent="findWedding">確認</button>
       </div>
     </div>
-    <li v-for="wedding in matchWedding" :key="wedding"  @pointerdown.prevent="enterWedding(wedding)">
+    <li v-for="(wedding,index) in matchWedding" :key="wedding"  @pointerdown.prevent="enterWedding(wedding,index)">
       <p class="wedding_title">
         {{ wedding.bridegroomName }} & {{ wedding.brideName }} 的婚禮
       </p>
@@ -30,35 +30,41 @@ export default {
 
     const { AllFirebasDatbase } = getAllDatabase(store);
     const matchWedding = ref([]);
+    let matchWeddingEmail = [];
 
     function findWedding() {
       
-      //reset matchWedding
+      //reset matchWedding & matchWeddingEmail
       matchWedding.value = [];
+      matchWeddingEmail = [];
 
       for (const database in AllFirebasDatbase.value) {
         if (
           database.split("_")[0] ===
           document.getElementById("weddingCode").value
         ) {
-          console.log(AllFirebasDatbase.value[database]);
+          // console.log(AllFirebasDatbase.value[database]);
           matchWedding.value.push(AllFirebasDatbase.value[database]);
+          matchWeddingEmail.push(database.split("_")[1]);
         }
       }
     }
 
-    function enterWedding(thisWedding) {
+    function enterWedding(thisWedding,index) {
       
       //存入目前的state 及 localStorage
       store.dispatch('firebaseDatabase/updateSelectedDatabase',thisWedding);
       store.dispatch('auth/updateState',{name:'isGuest',value:true});
+      store.dispatch('chat/updateSelectedEmail',matchWeddingEmail[index]);
+
 
       // console.log(typeof thisWedding);
       localStorage['selectedWedding'] =  JSON.stringify(thisWedding);
       localStorage['isGuest'] =  true;
+      localStorage['selectedWeddingEmail'] = matchWeddingEmail[index];  
       
       //前往別人的婚禮
-      router.replace('/identity/wedding');
+      router.replace('/guest/weddingInform');
       
     }
 

@@ -8,10 +8,10 @@
           >更改資料</base-button
         >
         <base-button class="purple" @pointerdown.prevent="gotoPage(2)"
-          >查看祝福牆</base-button
+          >賓客聊天</base-button
         >
         <base-button class="purple" @pointerdown.prevent="gotoPage(3)"
-          >增加照片</base-button
+          >查看祝福牆</base-button
         >
       </div>
 

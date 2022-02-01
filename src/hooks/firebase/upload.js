@@ -13,6 +13,7 @@ export default async function uploadToFirebase({
   newMarriedData,
   checkInfo,
   router,
+  reload
 }) {
   const storage = getStorage();
 
@@ -69,7 +70,7 @@ export default async function uploadToFirebase({
       // console.log("File available at", downloadURL);
       newMarriedData["marriedImg"] = downloadURL;
 
-      fetchDatePut({
+      await fetchDatePut({
         isHost: true,
         savePlace: `${newMarriedData["loginPassword"]}`,
         saveData: newMarriedData,
@@ -77,6 +78,10 @@ export default async function uploadToFirebase({
       });
       checkInfo.isLoading = false;
       router.replace('/newMan/yourwedding');
+
+      if(reload===true){
+        location.reload();
+      }
     }
   );
 }
