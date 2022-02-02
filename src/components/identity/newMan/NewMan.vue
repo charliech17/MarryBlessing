@@ -24,7 +24,7 @@
 import { useRouter } from "vue-router";
 export default {
   setup() {
-    const routerLink = ["/newMan/yourwedding", "/newMan/changeInforms"];
+    const routerLink = ["/newMan/yourwedding", "/newMan/changeInforms","/newMan/chatlist"];
 
     // function getThisDatabase(thisDb) {
     //   thisDatabase.value = thisDb;

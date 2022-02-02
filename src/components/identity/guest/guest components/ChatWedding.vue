@@ -4,9 +4,25 @@
   </base-dialog> -->
   <div class="main_contents">
     <div class="show_chats">
-      <div v-for="(message, index) in chatStore[0]" :key="index">
-        <span>{{ chatStore[1][index] }}</span>
-        <p>{{ message }}</p>
+      <div
+        class="each_chat"
+        v-for="(message, index) in chatStore[0]"
+        :key="index"
+      >
+        <div :id="judgeMessage(chatStore[2][index])">
+          <div>
+            <span
+              v-if="
+                !judgeMessage(chatStore[2][index]) &&
+                chatStore[3][index] === true
+              "
+              >已讀</span
+            >
+            <br />
+            <span>{{ chatStore[1][index] }}</span>
+          </div>
+          <p>{{ message }}</p>
+        </div>
       </div>
     </div>
 
@@ -26,6 +42,7 @@ import { nextTick, watch } from "@vue/runtime-core";
 import { useStore } from "vuex";
 
 import uploadChat from "../../../../hooks/firebase/chat/uploadChat.js";
+import uploadIsRead from "../../../../hooks/firebase/chat/uploadRead.js";
 import getNewEmail from "../../../../hooks/getNewEmail.js";
 import onUpdateChats from "../../../../hooks/firebase/chat/updateChats.js";
 
@@ -40,19 +57,31 @@ export default {
       () => store.getters["chat/getGuestNowWeddingMessage"]
     );
 
+    // hostEmail 和 guestEmail
     const sendWeddingEmail = store.getters["chat/getSelectedEmail"];
     const guestEmail = getNewEmail(
       store.getters["auth/allAuthInform"]["allAuthInform"].email
     );
 
+    //輸入的內容
     const inputContents = ref("");
 
+    //取得dom element
     const domElement = {};
     nextTick(() => {
       domElement.showChats = document.querySelector(".show_chats");
       domElement.textArea = document.querySelector(".inputs>textarea");
     });
 
+    //判斷是否是isGuest
+    const isGuest = computed(
+      () => store.getters["auth/allAuthInform"]["allAuthInform"].isGuest
+    );
+
+    const identity = ref("host");
+    if (isGuest.value) {
+      identity.value = "guest";
+    }
 
     //若載入完成移動到底端
     watch(chatStore, () => {
@@ -66,15 +95,46 @@ export default {
       }
     });
 
-    onUpdateChats({ guestEmail, hostEmail: sendWeddingEmail, store });
+    //隨時更新聊天內容
+    onUpdateChats({
+      guestEmail,
+      hostEmail: sendWeddingEmail,
+      store,
+      identity: identity.value,
+    });
 
-    
+    //監聽是否更新訊息，若有則將已讀設定為true
+
+    watch(chatStore, () => {
+      //計算其中false的總數
+      if (chatStore.value.join('')) {
+        let totalUnread = calUnread(chatStore.value[3]);
+
+        //更新到firebase上
+        uploadIsRead({
+          guestEmail,
+          hostEmail: sendWeddingEmail,
+          identity: identity.value,
+          totalUnread,
+        });
+      }
+    });
+
     function inputChats() {
-
       //把chat upload到firebase
-      const uploadMessage = [[inputContents.value], [getNowTime()], ["host"]];
+      const uploadMessage = [
+        [inputContents.value],
+        [getNowTime()],
+        [identity.value],
+        [false],
+      ];
 
-      uploadChat({ sendWeddingEmail, uploadMessage, guestEmail });
+      uploadChat({
+        hostEmail: sendWeddingEmail,
+        uploadMessage,
+        guestEmail,
+        identity: identity.value,
+      });
 
       //清除input
       cleanTextArea();
@@ -96,11 +156,38 @@ export default {
       return `${nowTime[0]}:${nowTime[1]}`;
     }
 
+    function judgeMessage(side) {
+      if (side !== identity.value) {
+        return "otherMessage";
+      }
+    }
+
+    // function judgeRead(isRead){
+    //   for(const read of isRead){
+    //     if(read === true){
+
+    //     }
+    //   }
+
+    // }
+
+    function calUnread(isReadArray) {
+      // if(isReadArray)
+      let totalUnread = 0;
+      for (const isRead of isReadArray) {
+        if (isRead === false) {
+          totalUnread++;
+        }
+      }
+      return totalUnread;
+    }
+
     return {
-      // chats,
+      judgeMessage,
       inputChats,
       inputContents,
       chatStore,
+      identity,
     };
   },
 };
@@ -118,10 +205,6 @@ export default {
   padding: 0.5rem;
 }
 
-/* .inner{
-    
-} */
-
 .show_chats {
   height: 50vh;
   margin: 0.5rem 0;
@@ -133,22 +216,35 @@ export default {
   box-sizing: border-box;
 }
 
-.show_chats > div {
+.each_chat {
+  width: 100%;
+  display: block;
+}
+
+.each_chat > div {
   /* display: inline-block; */
-  float: right;
-  clear: right;
+  /* float: right;
+  clear: right; */
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
   gap: 0.5rem;
 }
 
-.show_chats > div > span {
+#otherMessage {
+  flex-direction: row-reverse;
+}
+
+#otherMessage > p {
+  background-color: antiquewhite;
+}
+
+.each_chat > div > div > span {
   margin-bottom: 0.5rem;
   font-size: 0.2rem;
 }
 
-.show_chats > div > p {
+.each_chat > div > p {
   background-color: greenyellow;
   padding: 0.5rem;
   border-radius: 0.5rem;

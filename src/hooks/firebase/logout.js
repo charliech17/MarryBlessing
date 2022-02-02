@@ -16,6 +16,7 @@ export default function signout({router,store}) {
 
       //重設thisWedding 和 selected wedding
       store.dispatch('firebaseDatabase/resetWedding');
+      store.dispatch('chat/resetAll');
       //在頁面中載入時 用local storage
 
       localStorage.removeItem('isNewman');

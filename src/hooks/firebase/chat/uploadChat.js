@@ -1,12 +1,17 @@
 import { getDatabase, child, get, ref, set } from "firebase/database"; //, ref, set
 
-export default function uploadChat({ sendWeddingEmail, uploadMessage,guestEmail }) {
-  //,uploadMessage
+export default function uploadChat({ hostEmail, uploadMessage,guestEmail,identity }) {
   const db = getDatabase();
   const dbRef = ref(db);
 
-  //
-  get(child(dbRef, `Chat/${sendWeddingEmail}/${guestEmail}`))
+  //檢查是host or guest
+  if(identity==='host'){
+    let tempGuestEmail = guestEmail;
+    guestEmail = hostEmail;
+    hostEmail = tempGuestEmail;
+  }
+
+  get(child(dbRef, `Chat/${hostEmail}/${guestEmail}`))
     .then((savedChats) => {
       if (savedChats.exists()) {
 
@@ -20,9 +25,9 @@ export default function uploadChat({ sendWeddingEmail, uploadMessage,guestEmail 
           i++;
         }
 
-        setData({ db, sendWeddingEmail, uploadMessage:newUploadMessage,guestEmail });
+        setData({ db, sendWeddingEmail: hostEmail, uploadMessage:newUploadMessage,guestEmail });
       } else {
-        setData({ db, sendWeddingEmail, uploadMessage,guestEmail });
+        setData({ db, sendWeddingEmail: hostEmail, uploadMessage,guestEmail });
         console.log("No data available");
       }
     })

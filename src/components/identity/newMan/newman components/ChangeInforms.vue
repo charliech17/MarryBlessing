@@ -76,7 +76,6 @@ export default {
     const oldValues = { password: null, imgSrc: null };
 
     nextTick(() => {
-      // console.log(yourWeddingData.value);
       let finalSelectedWedding = yourWeddingData.value;
       if (typeof yourWeddingData.value === "string") {
         finalSelectedWedding = JSON.parse(yourWeddingData.value);

@@ -13,6 +13,7 @@ const YourWedding = defineAsyncComponent(()=>import('./components/identity/newMa
 const ChangeInforms = defineAsyncComponent(()=>import('./components/identity/newMan/newman components/ChangeInforms.vue'));
 const WeddingInform = defineAsyncComponent(()=>import('./components/identity/guest/guest components/OtherWedding.vue'));
 const ChatWedding = defineAsyncComponent(()=>import('./components/identity/guest/guest components/ChatWedding.vue'));
+const ChatList = defineAsyncComponent(()=>import('./components/identity/newMan/newman components/ChatList.vue'));
 
 const router = createRouter({
     history: createWebHistory(),
@@ -25,6 +26,8 @@ const router = createRouter({
         {path:'/identity/newMan',component:NewMan, children:[
             {path:'/newMan/yourwedding',component:YourWedding},
             {path:'/newMan/changeInforms',component:ChangeInforms},
+            {path:'/newMan/chatlist',component:ChatList},
+            {path:'/newMan/chat',component:ChatWedding},
         ]},
         {path:'/identity/guest',component:ConfirmWedding},
         {path:'/guest/wedding',component:EnterWedding,children:[

@@ -105,7 +105,7 @@ export default {
 
     function goToPage() {
       isLoginPage.value = !isLoginPage.value;
-      document.getElementById("account").focus();
+      // document.getElementById("account").focus();
     }
 
     async function submitForm() {

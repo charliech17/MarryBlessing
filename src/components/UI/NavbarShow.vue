@@ -24,7 +24,7 @@
           :key="item"
           @pointerdown.prevent="enterPage(index, false, false)"
         >
-        {{item}}
+          {{ item }}
         </a>
       </div>
       <!-- <div v-else>
@@ -49,13 +49,31 @@ export default {
     const beforeLoginPage = ["/blessing", "/login"];
 
     const afterLogin = reactive({
-      newman: ["婚禮資訊 (主辦方)", "更改資料", "查看祝福牆", "聊天", "進入別人的婚禮"],
-      guest: ["婚禮資訊 (受邀方)", "給予祝福", "聊天","重選婚禮" ,"舉辦婚禮"],
+      newman: [
+        "婚禮資訊 (主辦方)",
+        "更改資料",
+        "查看祝福牆",
+        "聊天",
+        "進入別人的婚禮",
+      ],
+      guest: ["婚禮資訊 (受邀方)", "給予祝福", "聊天", "重選婚禮", "舉辦婚禮"],
     });
 
     const afterLoginPage = {
-      newman: ["/newMan/yourwedding", "/newMan/changeInforms", "", "", "/identity/guest"],
-      guest: ["/guest/weddingInform", "/blessing", "", "/identity/guest","/identity/inform"],
+      newman: [
+        "/newMan/yourwedding",
+        "/newMan/changeInforms",
+        "",
+        "/newMan/chatlist",
+        "/identity/guest",
+      ],
+      guest: [
+        "/guest/weddingInform",
+        "/blessing",
+        "",
+        "/identity/guest",
+        "/identity/inform",
+      ],
     };
 
     const router = useRouter();
@@ -74,6 +92,9 @@ export default {
       }
 
       if (isNewman === true) {
+        if(index!==4){
+          setNotIsGuest();
+        }
         router.push(afterLoginPage.newman[index]);
         return;
       }
@@ -93,6 +114,11 @@ export default {
         return;
       }
       signout({ router, store });
+    }
+
+    function setNotIsGuest() {
+      store.dispatch("auth/updateState", { name: "isGuest", value: false });
+      localStorage.removeItem("isGuest");
     }
 
     return {
