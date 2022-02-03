@@ -11,8 +11,6 @@
       >
         🙂 {{ chat }}
         <div v-if="judgeUnread[index]!==0">{{ judgeUnread[index] }}</div>
-        <!-- {{isReadArray[index]}} -->
-        <!-- v-if="isReadArray[index]!==0" -->
       </div>
     </div>
   </div>
@@ -21,40 +19,14 @@
 <script>
 import { computed } from "@vue/reactivity";
 import { useStore } from "vuex";
-import chatListUpdate from "../../../../hooks/firebase/chat/chatListUpdate.js";
-import getNewEmail from "../../../../hooks/getNewEmail.js";
 import { useRouter } from "vue-router";
-// import { watch } from "@vue/runtime-core";
 
 export default {
   setup() {
     const router = useRouter();
     const store = useStore();
-    const yourWeddingEmail = getNewEmail(
-      store.getters["auth/allAuthInform"]["allAuthInform"].email
-    );
-    const isReadArray = computed(() => store.getters["chat/getIsRead"]);
-    const getSender = computed(() => store.getters["chat/getSender"]);
-    const chatList = computed(() => store.getters["chat/getHostWeddingList"]);
-
-    // console.log(isReadArray.value,getSender.value);
-    const judgeUnread = computed(()=>{
-        let countUnread = [];
-      for(let i=0;i<getSender.value.length;i++){
-        let count = 0;
-        for(let j=0;j<getSender.value[i].length;j++){
-          if(getSender.value[i][j]==='guest'&&isReadArray.value[i][j]===false){
-            count++;
-          }
-        }
-        countUnread.push(count);
-      }
-      return countUnread;
-    });
-    
-
-    //更新chatlist
-    chatListUpdate({ yourWeddingEmail, store });
+    const chatList = computed(() => store.getters["chat/getHostWeddingList"])
+    const judgeUnread = computed(()=>store.getters['chat/getItemAll'].allUnreadInform);
 
     function enterChat(email) {
       store.dispatch("chat/updateSelectedEmail", email);
@@ -62,22 +34,10 @@ export default {
       router.replace("/newMan/chat");
     }
 
-    // function judgeUnread(index){
-    //   let countUnread = 0;
-
-    //   for(let i=0;i<isReadArray.value[index];i++){
-
-    //     if(getSender.value[index][i]==='guest' && isReadArray.value[index][i]===false){
-    //       countUnread++;
-    //     }
-    //   }
-    //   return countUnread;
-    // }
 
     return {
       chatList,
       enterChat,
-      isReadArray,
       judgeUnread
     };
   },
@@ -91,6 +51,7 @@ export default {
   border-radius: 1rem;
   box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
   padding: 0.5rem;
+  max-width: 750px;
 }
 
 .no_data {
@@ -107,10 +68,7 @@ export default {
 
 .chat_list > h3 {
   text-align: center;
-  /* background-color: aqua; */
   border-radius: 0.5rem;
-  /* margin: .5rem 5rem; */
-  /* width: fit-content; */
 }
 
 .chat_person {
@@ -146,13 +104,9 @@ export default {
   color: white;
 }
 
-/* .chat_person::after{
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  bottom: -2px;
-  left: -2px;
-  border: 2px solid black;
-  content: '';
-} */
+@media (min-width: 750px) {
+  .main_contents{
+    margin: 2rem auto;
+  }
+}
 </style>

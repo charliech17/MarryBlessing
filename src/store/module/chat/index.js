@@ -8,7 +8,8 @@ export default {
             selectedEmail: localStorage['selectedWeddingEmail']||'',
             isRead:[],
             whoSendMessage:[],
-            totalUnread:0
+            totalUnread:0,
+            allUnreadInform:[],
         }
     },
     mutations:{

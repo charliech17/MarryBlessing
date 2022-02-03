@@ -39,16 +39,16 @@ body {
   color: brown;
   margin: 0;
   text-align: end;
-  font-size: 5px;
+  font-size: 15px;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1000px) {
   body {
     background-color: rgb(34, 41, 65);
   }
 
   .warning {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 }
 </style>

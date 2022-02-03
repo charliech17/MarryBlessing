@@ -103,11 +103,20 @@ export default {
       identity: identity.value,
     });
 
-    //監聽是否更新訊息，若有則將已讀設定為true
+    //監聽是否更新訊息或是"點入聊天室"，若有則將已讀設定為true
+    let totalUnread = calUnread(chatStore.value[3]);
+    if (totalUnread > 0) {
+      uploadIsRead({
+        guestEmail,
+        hostEmail: sendWeddingEmail,
+        identity: identity.value,
+        totalUnread,
+      });
+    }
 
     watch(chatStore, () => {
       //計算其中false的總數
-      if (chatStore.value.join('')) {
+      if (chatStore.value.join("")) {
         let totalUnread = calUnread(chatStore.value[3]);
 
         //更新到firebase上
@@ -195,14 +204,12 @@ export default {
 
 <style scoped>
 .main_contents {
-  /* margin-top: 2rem;
-  width: 100vw; */
-
   background-color: rgb(255, 255, 255);
   margin: 2rem;
   border-radius: 1rem;
   box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
   padding: 0.5rem;
+  max-width: 500px;
 }
 
 .show_chats {
@@ -268,5 +275,11 @@ export default {
   border: 1px solid black;
   flex: 1 1 auto;
   font-size: 1rem;
+}
+
+@media (min-width: 550px) {
+  .main_contents {
+    margin: 2rem auto;
+  }
 }
 </style>

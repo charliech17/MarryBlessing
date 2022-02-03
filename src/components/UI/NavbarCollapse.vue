@@ -29,9 +29,6 @@ export default {
   height: 3rem;
   position: absolute;
   right: 1%;
-  /* background-image: url('../../img/menu.png'); */
-  /* background-size: cover;
-  background-position: center; */
 }
 
 .collapse > img {

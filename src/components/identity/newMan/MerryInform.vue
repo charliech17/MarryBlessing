@@ -172,7 +172,6 @@ export default {
 <style scoped>
 .outer_background {
   min-height: 90%;
-  /* background-color: black; */
   background-image: url("../../../img/identity/inform.jpg");
   background-size: cover;
   background-position: center;
@@ -190,7 +189,6 @@ export default {
   width: 35%;
   margin: 0 5%;
   font-size: 1rem;
-  /* text-align: center; */
 }
 
 .name_inputs {
@@ -287,7 +285,9 @@ export default {
 .warning {
   font-size: 1rem;
 }
-/* .date>input{
-    
-} */
+
+@media (min-width:750px) {
+  
+}
+
 </style>

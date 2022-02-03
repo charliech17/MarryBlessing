@@ -30,14 +30,11 @@ export default {
   border-radius: 1rem;
 }
 
-/* .changeMargin{
-  margin: 0 1.5rem;
-} */
-
 .title {
   margin: 0 2rem;
   text-align: center;
   background-color: rgb(210, 123, 218);
   border-radius: .5rem;
 }
+
 </style>

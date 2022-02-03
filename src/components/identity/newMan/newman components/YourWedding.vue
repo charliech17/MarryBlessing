@@ -77,6 +77,7 @@ img {
   width: 100%;
   border-radius: 1rem;
   box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
 }
 
 .newManName {

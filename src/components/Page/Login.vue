@@ -215,6 +215,7 @@ h2 {
   width: 100%;
   text-align: center;
   border-radius: 10px;
+  box-shadow: 0 0 5px 5px rgba(0,0,0,0.2);
 }
 
 .signup {
@@ -230,11 +231,6 @@ h2 {
   align-items: center;
   justify-content: center;
 }
-
-/* .account,
-.password > * {
-  text-align: center;
-} */
 
 .login_contents {
   margin: 1rem 2rem;
@@ -282,23 +278,17 @@ input[type="password"] {
   font-weight: 900;
 }
 
-/* .warning {
-  color: brown;
-  margin: 0;
-  text-align: end;
-  font-size: 5px;
-} */
 @media (min-width: 500px) {
   .buttons > button {
     font-size: 2rem;
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1000px) {
   .login_contents {
     box-sizing: border-box;
     position: absolute;
-    width: 1200px;
+    width: 600px;
     margin: 0;
     padding: 1rem;
     border-radius: 2rem;

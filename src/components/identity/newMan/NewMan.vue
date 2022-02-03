@@ -1,34 +1,38 @@
 <template>
   <div class="outer_background">
-      <div class="buttons">
-        <base-button class="purple" @pointerdown.prevent="gotoPage(0)"
-          >婚禮資訊</base-button
-        >
-        <base-button class="purple" @pointerdown.prevent="gotoPage(1)"
-          >更改資料</base-button
-        >
-        <base-button class="purple" @pointerdown.prevent="gotoPage(2)"
-          >賓客聊天</base-button
-        >
-        <base-button class="purple" @pointerdown.prevent="gotoPage(3)"
-          >查看祝福牆</base-button
-        >
-      </div>
-
-      <router-view></router-view>
+    <div class="buttons">
+      <base-button class="purple" @pointerdown.prevent="gotoPage(0)"
+        >婚禮資訊</base-button
+      >
+      <base-button class="purple" @pointerdown.prevent="gotoPage(1)"
+        >更改資料</base-button
+      >
+      <base-button class="purple guest_chat" @pointerdown.prevent="gotoPage(2)"
+        >賓客聊天
+        <div v-if="totalUnread!==0">{{totalUnread}}</div></base-button>
+      <base-button class="purple" @pointerdown.prevent="gotoPage(3)"
+        >查看祝福牆</base-button
+      >
     </div>
+
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-// import { ref } from "@vue/reactivity";
+import getNewEmail from "../../../hooks/getNewEmail.js";
+import chatListUpdate from "../../../hooks/firebase/chat/chatListUpdate.js";
+import { computed } from '@vue/reactivity';
 import { useRouter } from "vue-router";
+import { useStore } from 'vuex';
+import { watch } from '@vue/runtime-core';
 export default {
   setup() {
-    const routerLink = ["/newMan/yourwedding", "/newMan/changeInforms","/newMan/chatlist"];
-
-    // function getThisDatabase(thisDb) {
-    //   thisDatabase.value = thisDb;
-    // }
+    const routerLink = [
+      "/newMan/yourwedding",
+      "/newMan/changeInforms",
+      "/newMan/chatlist",
+    ];
 
     const router = useRouter();
     function gotoPage(number) {
@@ -36,10 +40,53 @@ export default {
       router.push(routerLink[number]);
     }
 
+
+    //計算聊天未讀數量
+    const store = useStore();
+    const yourWeddingEmail = getNewEmail(
+      store.getters["auth/allAuthInform"]["allAuthInform"].email
+    );
+    const isReadArray = computed(() => store.getters["chat/getIsRead"]);
+    const getSender = computed(() => store.getters["chat/getSender"]);
+    const judgeUnread = computed(()=>{
+        let countUnread = [];
+      for(let i=0;i<getSender.value.length;i++){
+        let count = 0;
+        for(let j=0;j<getSender.value[i].length;j++){
+          if(getSender.value[i][j]==='guest'&&isReadArray.value[i][j]===false){
+            count++;
+          }
+        }
+        countUnread.push(count);
+      }
+      return countUnread;
+    });
+
+    //計算unread總數，存入store中
+    watch(judgeUnread,()=>{
+      let totalUnread =0;
+      for(const num of judgeUnread.value){
+        totalUnread+=num;
+      }
+      //更新到store中
+      store.dispatch('chat/updateItem',{
+        name:'allUnreadInform',
+        value:judgeUnread.value,
+      });
+      store.dispatch('chat/updateItem',{
+        name:'totalUnread',
+        value:totalUnread,
+      });
+    })
+
+    //更新chatlist
+    chatListUpdate({ yourWeddingEmail, store });
+
+    const totalUnread = computed(()=>store.getters['chat/getItemAll'].totalUnread);
+
     return {
-      // thisDatabase,
-      // getThisDatabase,
       gotoPage,
+      totalUnread
     };
   },
 };
@@ -69,28 +116,21 @@ export default {
   box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* .inner_contents {
-  margin: 1.5rem;
+.guest_chat {
+  position: relative;
 }
-
-img {
-  width: 100%;
-  border-radius: 1rem;
-  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
-} */
-/* .newManName {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.newManName > span {
-  display: inline-block;
-  background: rgb(74 12 74);
+.guest_chat > div {
+  text-align: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  width: 1.5rem;
+  height: 1.5rem;
+  line-height: 1.8rem;
+  border-radius: 50%;
+  background: red;
+  font-size: 0.8rem;
   color: white;
-  border-radius: 0.5rem;
-  font-weight: 900;
-  padding: 0.5rem;
-} */
+}
 </style>

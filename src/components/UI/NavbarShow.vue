@@ -104,7 +104,6 @@ export default {
         return;
       }
 
-      // router.push('/identity/guest');
     }
 
     function trylogin(boolen) {
@@ -146,12 +145,12 @@ export default {
   display: block;
   list-style: none;
   text-decoration: none;
-  font-size: 8vw;
+  font-size: 1.5rem;
   color: black;
   font-weight: 700;
   width: 100%;
   text-align: center;
-  padding: 3vh 0;
+  padding: 1rem;
   border-bottom: 1px solid black;
 }
 

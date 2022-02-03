@@ -53,6 +53,7 @@ export default {
   border-radius: 1rem;
   box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
   padding: 0.5rem;
+  max-width: 500px;
 }
 
 h2 {
@@ -88,21 +89,27 @@ h2 {
 .outer_img {
   background-color: rgb(255, 255, 255);
   box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
-  padding: 0.5rem;
-  margin: 0 2rem;
+  padding: 0.2rem;
   border-radius: 0.5rem;
-  background-color: black;
+  /* max-width: 500px; */
+  margin: .5rem auto;
 }
 
 .img_background {
-  height: 16rem;
-  width: 9rem;
   margin: 0 auto;
-  /* background-color: black; */
 }
 
 .img_background > img {
   width: 100%;
   height: 100%;
+  max-width: 500px;
+}
+
+@media (min-width:550px) {
+  .main_contents {
+  margin: 2rem auto;
+  
+}
+  
 }
 </style>

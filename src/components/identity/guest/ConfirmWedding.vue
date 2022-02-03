@@ -89,23 +89,24 @@ export default {
 .background {
   background-image: url("../../../img/identity/inform.jpg");
   background-size: cover;
-  /* background-position: center; */
-  height: 100%;
+  min-height: 90%;
+
 }
 
 li {
   list-style: none;
   background-color: white;
   width: 50%;
-  margin: 1rem auto;
+  margin: 1.4rem auto;
   border-radius: .5rem;
   padding: .5rem;
   box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.5);
+  max-width: 250px;
 }
 
 .enterWeddingCode {
   box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
-  margin: 1rem;
+  margin: 3rem 1rem;
   border-radius: 0.5rem;
   padding: 0.5rem;
 }
@@ -149,5 +150,11 @@ li {
   background-color: rgb(225, 205, 243);
   font-weight: 900;
   border-radius: .8rem;
+}
+
+@media (min-width:1000px) {
+  .enterWeddingCode{
+    margin: 0 2rem;
+  }
 }
 </style>

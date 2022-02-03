@@ -1,15 +1,28 @@
 <template>
   <div class="the_header">
-    <!-- <h2 class="brand">Marry Blessings</h2> -->
     <router-link to="/home" class="brand">Marry Blessings</router-link>
-    <div class="switch_page_button">
-      <router-link to="/">進入祝福牆</router-link>
-      <!-- <h3>進入祝福牆</h3> -->
-      <router-link to="/blessing">開啟祝福牆</router-link>
-      <!-- <h3 @click="enterPage('/send_blessing')">開啟祝福牆</h3> -->
-      <!-- <h3>登入/註冊</h3> -->
+    <div class="switch_page_button" v-if="!allAuthInform.isLogin">
+      <router-link to="/blessing">試用祝福牆</router-link>
       <router-link to="/login">登入/註冊</router-link>
     </div>
+    <div v-if="allAuthInform.isNewman" class="switch_page_button">
+      <router-link to="/newMan/yourwedding">您的婚禮資訊</router-link>
+      <router-link to="/identity/guest">進入別人的婚禮</router-link>
+      <router-link to="/home" @pointerdown.prevent="trylogin(false)"
+        >登出</router-link
+      >
+    </div>
+    <div
+      v-else-if="!allAuthInform.isNewman && allAuthInform.isGuest"
+      class="switch_page_button"
+    >
+      <router-link to="/identity/guest">重選婚禮</router-link>
+      <router-link to="/identity/inform">舉辦婚禮</router-link>
+      <router-link to="/home" @pointerdown.prevent="trylogin(false)"
+        >登出</router-link
+      >
+    </div>
+
     <navbar-collapse></navbar-collapse>
   </div>
   <navbar-show></navbar-show>
@@ -20,17 +33,33 @@
 import NavbarCollapse from "./NavbarCollapse.vue";
 import NavbarShow from "./NavbarShow.vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+import { computed } from "@vue/reactivity";
+import signout from "../../hooks/firebase/logout.js";
 export default {
   components: { NavbarCollapse, NavbarShow },
   setup() {
     const router = useRouter();
+    const store = useStore();
+
+    const allAuthInform = computed(
+      () => store.getters["auth/allAuthInform"]["allAuthInform"]
+    );
 
     function enterPage(page) {
       router.replace(page);
-      //'/send_blessing'
     }
 
-    return { enterPage };
+    function trylogin(boolen) {
+      store.dispatch("navbar/toggleMenuOpen", false);
+      if (boolen) {
+        router.push("/login");
+        return;
+      }
+      signout({ router, store });
+    }
+
+    return { enterPage, allAuthInform, trylogin };
   },
 };
 </script>
@@ -60,19 +89,17 @@ export default {
 
 .switch_page_button > * {
   margin-right: 2rem;
-  /* margin-right: 2rem; */
   text-decoration: none;
   font-size: 1.5rem;
   font-weight: 900;
   border: 1px white solid;
   text-align: center;
   display: inline-block;
-  /* padding: 0.3rem; */
-  box-shadow: 0 0 3px 5px rgba(245, 193, 124,.5);
+  box-shadow: 0 0 3px 5px rgba(245, 193, 124, 0.5);
 }
 
 .switch_page_button > *:hover,
-.switch_page_button > *:active{
+.switch_page_button > *:active {
   color: rgb(50, 52, 121);
   background-color: wheat;
 }
@@ -83,6 +110,8 @@ export default {
     cursor: pointer;
     position: absolute;
     right: 0;
+    justify-content: center;
+    align-items: flex-start;
   }
   .brand {
     margin-left: 2rem;

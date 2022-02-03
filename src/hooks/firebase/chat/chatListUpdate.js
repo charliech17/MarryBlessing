@@ -1,33 +1,29 @@
-import { getDatabase, child, get, ref } from "firebase/database"; //, ref, set
+import { getDatabase,  ref , onValue} from "firebase/database"; //, ref, set child, get,
 
 export default function chatListUpdate({ yourWeddingEmail, store }) {
   const db = getDatabase();
-  const dbRef = ref(db);
+  
+  const ChatRefs = ref(db, `Chat/${yourWeddingEmail}`);
 
-  get(child(dbRef, `Chat/${yourWeddingEmail}`))
-    .then((savedChats) => {
-      if (savedChats.exists()) {
-        const firebaseChatsObject = savedChats.val();
-        let isReadArray = [];
-        const emails = [];
-        const whoSendMessage = [];
+  onValue(ChatRefs, (snapshot) => {
+    const data = snapshot.val();
+    const firebaseChatsObject = snapshot.val();
+    if (!data) {
+      return;
+    }
 
-        for (const object in firebaseChatsObject) {
-          isReadArray.push(firebaseChatsObject[object]["uploadMessage"][3]);
-          whoSendMessage.push(firebaseChatsObject[object]["uploadMessage"][2]);
-          emails.push(object);
-        }
+    let isReadArray = [];
+    const emails = [];
+    const whoSendMessage = [];
 
-        console.log(whoSendMessage);
+    for (const object in firebaseChatsObject) {
+      isReadArray.push(firebaseChatsObject[object]["uploadMessage"][3]);
+      whoSendMessage.push(firebaseChatsObject[object]["uploadMessage"][2]);
+      emails.push(object);
+    }
 
-        store.dispatch("chat/updateNewSender", whoSendMessage);
-        store.dispatch("chat/updateIsRead", isReadArray);
-        store.dispatch("chat/updateHostWeddingList", emails);
-      } else {
-        //no data
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    store.dispatch("chat/updateNewSender", whoSendMessage);
+    store.dispatch("chat/updateIsRead", isReadArray);
+    store.dispatch("chat/updateHostWeddingList", emails);
+  });
 }

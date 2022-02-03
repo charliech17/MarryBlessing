@@ -32,7 +32,9 @@ export default {
 .buttons {
   display: flex;
   justify-content: center;
-  margin-top: 0.5rem;
+  max-width: 500px;
+  margin: 0 auto;
+  /* margin-top: 0.5rem; */
   /* width: 100%; */
 } 
 .buttons > button {
