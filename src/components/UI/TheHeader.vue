@@ -6,7 +6,7 @@
       <router-link to="/login">登入/註冊</router-link>
     </div>
     <div v-if="allAuthInform.isNewman" class="switch_page_button">
-      <router-link to="/newMan/yourwedding">您的婚禮資訊</router-link>
+      <router-link to="/newMan/yourwedding" @pointerdown.prevent="setNotIsGuest">您的婚禮資訊</router-link>
       <router-link to="/identity/guest">進入別人的婚禮</router-link>
       <router-link to="/home" @pointerdown.prevent="trylogin(false)"
         >登出</router-link
@@ -59,7 +59,12 @@ export default {
       signout({ router, store });
     }
 
-    return { enterPage, allAuthInform, trylogin };
+    function setNotIsGuest() {
+      store.dispatch("auth/updateState", { name: "isGuest", value: false });
+      localStorage.removeItem("isGuest");
+    }
+
+    return { enterPage, allAuthInform, trylogin,setNotIsGuest };
   },
 };
 </script>
@@ -96,6 +101,7 @@ export default {
   text-align: center;
   display: inline-block;
   box-shadow: 0 0 3px 5px rgba(245, 193, 124, 0.5);
+  border-radius: 5px;
 }
 
 .switch_page_button > *:hover,

@@ -1,24 +1,38 @@
 <template>
   <label class="add_photos">
-    <div><img src="../../../img/pic.png" /></div>
-    <input id="image_input" type="file" accept="image/*" />
-    <p>新增照片</p>
+    <div><img :src="imageSrc" /></div>
+    <!-- <input id="image_input" type="file" accept="image/*" /> -->
+    <input id="image_input" type="file" :accept="`${acceptType.type}/*`" />
+    <p>{{acceptType.name}}</p>
   </label>
 </template>
 
 <script>
-import { onMounted } from "@vue/runtime-core";
+import { onMounted, ref } from "@vue/runtime-core";
 import { useStore } from "vuex";
 export default {
-  setup() {
+  props:['acceptType'],
+  setup(props) {
+    const imageSrc = ref('');
     onMounted(() => {
       const inputImages = document.getElementById("image_input");
       const store = useStore();
+      
+
+      if(props.acceptType.type==='image'){
+        imageSrc.value = require('../../../img/pic.png');
+      }else{
+        imageSrc.value = require('../../../img/video.png');
+      }
 
       inputImages.addEventListener("change", () => {
         store.dispatch("addphoto/tellImageInput", {newInput:true,inputFile:inputImages});
       });
     });
+
+    return {
+      imageSrc
+    }
   },
 };
 </script>

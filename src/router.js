@@ -14,11 +14,11 @@ const ChangeInforms = defineAsyncComponent(()=>import('./components/identity/new
 const WeddingInform = defineAsyncComponent(()=>import('./components/identity/guest/guest components/OtherWedding.vue'));
 const ChatWedding = defineAsyncComponent(()=>import('./components/identity/guest/guest components/ChatWedding.vue'));
 const ChatList = defineAsyncComponent(()=>import('./components/identity/newMan/newman components/ChatList.vue'));
+const BlessingStart = defineAsyncComponent(()=>import('./components/SendBlessing/BlessingStart.vue'));
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        {path: '/blessing', component: SendBlessing},
         {path: '/home', component: Home},
         {path:'/login', component:Login},
         {path:'/identity',component:Identity},
@@ -34,6 +34,8 @@ const router = createRouter({
             {path:'/guest/weddingInform',component: WeddingInform},
             {path:'/guest/chat',component:ChatWedding }
         ]},
+        {path: '/blessing', component: SendBlessing},
+        {path:'/blessingStart',component:BlessingStart},
         {path:'/',redirect: '/home'}
     ]
 });

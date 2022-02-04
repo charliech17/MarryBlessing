@@ -2,7 +2,7 @@
   <div class="controls_and_contents">
     <transition name="edit">
       <div class="buttons" v-if="!isEditingText">
-        <addphoto-button></addphoto-button>
+        <addphoto-button :acceptType="{type:`image`,name:'新增照片'}"></addphoto-button>
         <base-button buttonStyle="purple" @click="addText" :needImage="true"
           >新增文字 <template #img> <img src="../../img/text.png" /> </template
         ></base-button>

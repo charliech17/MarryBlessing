@@ -64,6 +64,7 @@ import deleteStorageItems from "../../../../hooks/firebase/deleteStorage.js";
 import fetchDatePut from "../../../../hooks/firebase/fetchData.js";
 import { useRouter } from "vue-router";
 import { nextTick } from "@vue/runtime-core";
+// import sad from '../../../../img/identity/noImage.jpg'
 export default {
   setup() {
     let file = null;
@@ -115,6 +116,12 @@ export default {
 
       oldValues.password = finalSelectedWedding.loginPassword;
       oldValues.imgSrc = finalSelectedWedding.marriedImg;
+
+      if (!oldValues.imgSrc) {
+        document.getElementById(
+          "weddingImg"
+        ).src = require("../../../../img/identity/noImage.jpg");
+      }
     });
 
     const checkInfo = reactive({
@@ -145,10 +152,11 @@ export default {
 
       //有更新圖片
       if (oldValues.imgSrc !== document.getElementById("weddingImg").src) {
-        //newMarriedData["marriedImg"]
-        //delete old image
-        // console.log('delete image!!!!!!!');
-        await deleteStorageItems(oldValues.imgSrc);
+        
+        //如果原本有圖片，先刪除舊的圖片
+        if (oldValues.imgSrc) {
+          await deleteStorageItems(oldValues.imgSrc);
+        }
         // upload new Image
         await uploadToFirebase({
           file,
@@ -156,13 +164,12 @@ export default {
           newMarriedData,
           checkInfo,
           router,
-          reload:true
+          reload: true,
         });
       }
       //無更新圖片
       else {
         newMarriedData["marriedImg"] = oldValues.imgSrc;
-        // console.log(newMarriedData["loginPassword"]);
         await fetchDatePut({
           isHost: true,
           savePlace: `${newMarriedData["loginPassword"]}`,
@@ -185,9 +192,6 @@ export default {
         });
       }
 
-      // checkInfo.isLoading = false;
-      // router.replace('/newMan/yourwedding');
-      // location.reload();
       return;
     }
 

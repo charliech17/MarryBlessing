@@ -113,7 +113,12 @@ export default {
       }
       //fetch firebase存入資料newMarriedDate(文字及照片)
       newMarriedData["isInitial"] = true;
-      // 登入碼-new Date().toISOString();
+      
+      //設定成新人並存入localStorage
+      store.dispatch('auth/updateState',{name:'isNewman',value:true});
+      store.dispatch('auth/updateState',{name:'isGuest',value:false});
+      localStorage['isNewman'] = true;
+      localStorage['isGuest'] = false;
 
       if (!file) {
         newMarriedData["marriedImg"] = null;

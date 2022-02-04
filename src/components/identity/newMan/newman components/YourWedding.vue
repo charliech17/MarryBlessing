@@ -11,7 +11,7 @@
   <h3>時間: {{ thisDatabase.startTime }} ~ {{ thisDatabase.endTime }}</h3>
   <h3>地點: {{ thisDatabase.place }}</h3>
   <h3>登入碼 {{ thisDatabase.loginPassword }}</h3>
-  <img :src="thisDatabase.marriedImg" />
+  <img :src="thisDatabase.marriedImg||require('../../../../img/identity/noImage.jpg')" />
     </base-card>
 </template>
 

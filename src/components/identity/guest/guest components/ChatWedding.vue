@@ -116,16 +116,19 @@ export default {
 
     watch(chatStore, () => {
       //計算其中false的總數
-      if (chatStore.value.join("")) {
+      if (chatStore.value.join("") && chatStore.value[3]) {
+        console.log(chatStore.value[3]);
         let totalUnread = calUnread(chatStore.value[3]);
 
-        //更新到firebase上
-        uploadIsRead({
-          guestEmail,
-          hostEmail: sendWeddingEmail,
-          identity: identity.value,
-          totalUnread,
-        });
+        if (totalUnread > 0) {
+          //更新到firebase上
+          uploadIsRead({
+            guestEmail,
+            hostEmail: sendWeddingEmail,
+            identity: identity.value,
+            totalUnread,
+          });
+        }
       }
     });
 
@@ -151,7 +154,11 @@ export default {
 
     function scrollToBottom() {
       nextTick(() => {
-        domElement.showChats.scrollTop = domElement.showChats.scrollHeight;
+        try {
+          domElement.showChats.scrollTop = domElement.showChats.scrollHeight;
+        } catch (err) {
+          //
+        }
       });
     }
 
@@ -171,18 +178,11 @@ export default {
       }
     }
 
-    // function judgeRead(isRead){
-    //   for(const read of isRead){
-    //     if(read === true){
-
-    //     }
-    //   }
-
-    // }
-
     function calUnread(isReadArray) {
-      // if(isReadArray)
+      if(!isReadArray) return 0;
+
       let totalUnread = 0;
+
       for (const isRead of isReadArray) {
         if (isRead === false) {
           totalUnread++;

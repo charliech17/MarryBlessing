@@ -7,7 +7,11 @@
         <button @pointerdown.prevent="findWedding">確認</button>
       </div>
     </div>
-    <li v-for="(wedding,index) in matchWedding" :key="wedding"  @pointerdown.prevent="enterWedding(wedding,index)">
+    <li
+      v-for="(wedding, index) in matchWedding"
+      :key="wedding"
+      @pointerdown.prevent="enterWedding(wedding, index)"
+    >
       <p class="wedding_title">
         {{ wedding.bridegroomName }} & {{ wedding.brideName }} 的婚禮
       </p>
@@ -22,7 +26,7 @@
 import { ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import getAllDatabase from "../../../hooks/firebase/getAllDatabase.js";
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 export default {
   setup() {
     const store = useStore();
@@ -33,7 +37,6 @@ export default {
     let matchWeddingEmail = [];
 
     function findWedding() {
-      
       //reset matchWedding & matchWeddingEmail
       matchWedding.value = [];
       matchWeddingEmail = [];
@@ -50,22 +53,21 @@ export default {
       }
     }
 
-    function enterWedding(thisWedding,index) {
-      
+    function enterWedding(thisWedding, index) {
       //存入目前的state 及 localStorage
-      store.dispatch('firebaseDatabase/updateSelectedDatabase',thisWedding);
-      store.dispatch('auth/updateState',{name:'isGuest',value:true});
-      store.dispatch('chat/updateSelectedEmail',matchWeddingEmail[index]);
-
+      store.dispatch("firebaseDatabase/updateSelectedDatabase", thisWedding);
+      store.dispatch("auth/updateState", { name: "isGuest", value: true });
+      store.dispatch("chat/updateSelectedEmail", matchWeddingEmail[index]);
+      // store.dispatch('auth/updateState',{name:'isNewman',value:false});
 
       // console.log(typeof thisWedding);
-      localStorage['selectedWedding'] =  JSON.stringify(thisWedding);
-      localStorage['isGuest'] =  true;
-      localStorage['selectedWeddingEmail'] = matchWeddingEmail[index];  
-      
+      localStorage["selectedWedding"] = JSON.stringify(thisWedding);
+      localStorage["isGuest"] = true;
+      // localStorage.removeItem('isNewman');
+      localStorage["selectedWeddingEmail"] = matchWeddingEmail[index];
+
       //前往別人的婚禮
-      router.replace('/guest/weddingInform');
-      
+      router.replace("/guest/weddingInform");
     }
 
     function showImg(imgSrc) {
@@ -90,7 +92,6 @@ export default {
   background-image: url("../../../img/identity/inform.jpg");
   background-size: cover;
   min-height: 90%;
-
 }
 
 li {
@@ -98,8 +99,8 @@ li {
   background-color: white;
   width: 50%;
   margin: 1.4rem auto;
-  border-radius: .5rem;
-  padding: .5rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
   box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.5);
   max-width: 250px;
 }
@@ -109,6 +110,7 @@ li {
   margin: 3rem 1rem;
   border-radius: 0.5rem;
   padding: 0.5rem;
+  max-width: 1000px;
 }
 
 .enterWeddingCode > label {
@@ -131,7 +133,7 @@ li {
 
 .input_button > input {
   width: 40%;
-  border:1px solid black
+  border: 1px solid black;
 }
 
 .weddingImg {
@@ -149,12 +151,16 @@ li {
   text-align: center;
   background-color: rgb(225, 205, 243);
   font-weight: 900;
-  border-radius: .8rem;
+  border-radius: 0.8rem;
 }
 
-@media (min-width:1000px) {
-  .enterWeddingCode{
-    margin: 0 2rem;
+@media (min-width: 1000px) {
+  .enterWeddingCode {
+    margin: 0 auto;
+  }
+
+  .background {
+    padding: 2rem;
   }
 }
 </style>

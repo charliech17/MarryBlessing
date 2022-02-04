@@ -74,13 +74,13 @@ export default {
 .chat_person {
   text-align: left;
   font-size: 1.5rem;
-  /* overflow: hidden; */
   text-overflow: ellipsis;
   box-shadow: 0 0 5px 6px rgba(211, 213, 238, 0.836);
   border-radius: 1rem;
   margin: 2rem 0.5rem;
   padding: 0.5rem;
   position: relative;
+  white-space: nowrap;
 }
 
 .chat_person:hover,
