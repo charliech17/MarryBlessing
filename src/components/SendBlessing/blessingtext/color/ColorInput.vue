@@ -133,14 +133,12 @@ export default {
       }
 
       const colorIndex = controlColors.value.colorIndex;
-      // console.log(colorIndex,initial);
+      
       nextTick(()=>{
         document.body
         .querySelector(`.color_bar`)
         .children.item(colorIndex)
         .classList.add("pickedColor");
-
-        console.log(colorIndex,lastSelected.colorIndex,initial);
       
       if ( (colorIndex!==lastSelected.colorIndex)) {
         if(!initial){

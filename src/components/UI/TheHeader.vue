@@ -2,7 +2,7 @@
   <div class="the_header">
     <router-link to="/home" class="brand">Marry Blessings</router-link>
     <div class="switch_page_button" v-if="!allAuthInform.isLogin">
-      <router-link to="/blessing">試用祝福牆</router-link>
+      <router-link to="/blessingStart">試用祝福牆</router-link>
       <router-link to="/login">登入/註冊</router-link>
     </div>
     <div v-if="allAuthInform.isNewman" class="switch_page_button">
@@ -97,7 +97,7 @@ export default {
   text-decoration: none;
   font-size: 1.5rem;
   font-weight: 900;
-  border: 1px white solid;
+  /* border: 1px white solid; */
   text-align: center;
   display: inline-block;
   box-shadow: 0 0 3px 5px rgba(245, 193, 124, 0.5);
@@ -106,8 +106,8 @@ export default {
 
 .switch_page_button > *:hover,
 .switch_page_button > *:active {
-  color: rgb(50, 52, 121);
-  background-color: wheat;
+  color: rgb(252, 252, 252);
+  background-color: rgb(235, 213, 166);
 }
 
 @media (min-width: 750px) {

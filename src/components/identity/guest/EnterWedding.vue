@@ -16,7 +16,7 @@ export default {
   setup() {
     const router = useRouter();
 
-    const routerLink = ['/guest/weddingInform','/blessing','/guest/chat'];
+    const routerLink = ['/guest/weddingInform','/blessingStart','/guest/chat'];
     function gotoPage(page){
       router.push(routerLink[page]);
     }

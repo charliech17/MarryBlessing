@@ -34,8 +34,8 @@ const router = createRouter({
             {path:'/guest/weddingInform',component: WeddingInform},
             {path:'/guest/chat',component:ChatWedding }
         ]},
-        {path: '/blessing', component: SendBlessing},
         {path:'/blessingStart',component:BlessingStart},
+        {path: '/blessing', component: SendBlessing},
         {path:'/',redirect: '/home'}
     ]
 });

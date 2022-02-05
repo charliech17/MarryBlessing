@@ -12,6 +12,7 @@ import { useStore } from "vuex";
 import fireBaseInit from "./hooks/firebase/firebaeInit.js";
 import onUpdateDate from "./hooks/firebase/onUpdateData.js";
 import isSignin from "./hooks/firebase/isSignIn.js"
+
 export default {
   setup() {
     fireBaseInit();

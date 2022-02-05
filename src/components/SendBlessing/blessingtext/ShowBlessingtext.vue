@@ -7,15 +7,16 @@
     :value="blessing.text"
     :style="styleList(blessing.style)"
     draggable="false"
-    @mousedown="mouseClick"
-    @mousemove="mouseMove($event)"
+    @mousedown.prevent="mouseClick"
+    @mousemove.prevent="mouseMove($event)"
+    @mouseup.prevent="touchEdit({  blessing })"
     @touchstart.prevent="mouseClick"
     @touchmove.prevent="mouseMove($event)"
-    @touchend.prevent="touchEdit($event, blessing)"
+    @touchend.prevent="touchEdit({  blessing })"
     @blur="blurTextArea($event, blessing.id, blessing.style)"
-    @dblclick.prevent="clickEdit($event, blessing.id)"
     @input.prevent="changeSize($event, blessing.id)"
   />
+  <!-- @dblclick.prevent="clickEdit($event, blessing.id)" -->
   <!-- readonly -->
   <!-- :readonly="judgeParameter.onlyRead" -->
 </template>
@@ -38,6 +39,7 @@ export default {
     const blessingTextAdded = computed(
       () => store.getters["blessing/getBlessingText"].length
     );
+    console.log(allBlessingTextAreas);
 
     watch(blessingTextAdded, (newValue, oldValue) => {
       if (newValue < oldValue) return;
@@ -164,9 +166,21 @@ export default {
     });
 
     function mouseup() {
-      judgeParameter.mousePressed = false;
-      judgeParameter.notFocus = true;
       judgeDelete();
+      // event.preventDefault();
+      // touchEdit();
+      //給 id，從allBlessingText中找出 thisBlessingText
+      // console.log(store.getters['blessing/getInitialInputs'].lastId);
+      Object.assign(judgeParameter,{notFocus:true})
+      // judgeParameter.onlyRead = false;
+      // judgeParameter.nowDoubleClick = true;
+      const lastId = store.getters["blessing/getInitialInputs"].lastId;
+      if (lastId) {
+        // console.log(allBlessingTextAreas);
+        const blessing =  allBlessingTextAreas.find(thisBlessing => thisBlessing.id === lastId);
+        touchEdit({blessing});
+        // console.log(blessing);
+      }
     }
 
     window.addEventListener("mouseup", mouseup);
@@ -234,14 +248,17 @@ export default {
       nowEditText(true, id);
     }
 
-    function touchEdit(event, blessing) {
+    function touchEdit({  blessing }) {
       judgeDelete();
+
+      // console.log(blessing);
+      const textArea =  document.getElementById(blessing.id);
 
       try {
         const stylePosition = {
-          bottom: event.target.style.bottom,
-          top: event.target.style.top,
-          left: event.target.style.left,
+          bottom: textArea.style.bottom,
+          top: textArea.style.top,
+          left: textArea.style.left,
         };
         judgeMouseMove(blessing.id, stylePosition);
       } catch (err) {
@@ -250,18 +267,18 @@ export default {
 
       if (!judgeParameter.wantEdit || judgeParameter.isMouseMove) {
         judgeParameter.isMouseMove = false;
-        event.target.style.resize = "none";
+        textArea.style.resize = "none";
         store.dispatch("blessing/isTextMoving", false);
         return;
       }
       nextTick(() => {
-        Object.assign(event.target.style, { cursor: "auto" });
+        Object.assign(textArea.style, { cursor: "auto" });
         Object.assign(judgeParameter, {
           nowDoubleClick: true,
           wantEdit: false,
         });
 
-        event.target.focus();
+        textArea.focus();
         nowEditText(true, blessing.id);
         // console.log(blessing.controlColors);
         // store.dispatch('editText/getEdited',blessing.controlColors);

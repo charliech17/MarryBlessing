@@ -46,7 +46,7 @@ import signout from "../../hooks/firebase/logout.js";
 export default {
   setup() {
     const beforeLoginItems = reactive(["試用祝福牆", "登入/註冊"]);
-    const beforeLoginPage = ["/blessing", "/login"];
+    const beforeLoginPage = ["/blessingStart", "/login"];
 
     const afterLogin = reactive({
       newman: [
@@ -69,7 +69,7 @@ export default {
       ],
       guest: [
         "/guest/weddingInform",
-        "/blessing",
+        "/blessingStart",
         "",
         "/identity/guest",
         "/identity/inform",

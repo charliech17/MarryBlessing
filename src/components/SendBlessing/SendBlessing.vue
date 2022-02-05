@@ -2,7 +2,7 @@
   <div class="controls_and_contents">
     <transition name="edit">
       <div class="buttons" v-if="!isEditingText">
-        <addphoto-button :acceptType="{type:`image`,name:'新增照片'}"></addphoto-button>
+        <!-- <addphoto-button :acceptType="{type:`image`,name:'新增照片'}"></addphoto-button> -->
         <base-button buttonStyle="purple" @click="addText" :needImage="true"
           >新增文字 <template #img> <img src="../../img/text.png" /> </template
         ></base-button>
@@ -23,13 +23,13 @@ import { computed } from "@vue/reactivity";
 import { useStore } from "vuex";
 import AddBlessing from "./blessingtext/AddBlessing.vue";
 import EditBlessing from "./blessingtext/EditBlessing.vue";
-import AddphotoButton from "./addphotos/AddphotoButton.vue";
+// import AddphotoButton from "./addphotos/AddphotoButton.vue";
 
 export default {
   components: {
     AddBlessing,
     EditBlessing,
-    AddphotoButton,
+    // AddphotoButton,
   },
   setup() {
     const store = useStore();

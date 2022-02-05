@@ -66,8 +66,7 @@ export default {
 
 
     const controlColors = computed(()=>store.getters['editText/controlColors']);
-    // console.log(controlColors.value);
-
+    
 
     async function focusTextInput() {
       await (showTextArea.value = true);
@@ -85,11 +84,13 @@ export default {
 
     function blurInput(event) {
       let boolenIsEdting = false;
+      console.log('blurblur');
 
       try {
         if (
-          event.relatedTarget.tagName === "BUTTON" ||
-          event.relatedTarget.tagName === "DIV"
+          event.relatedTarget.tagName === "BUTTON" 
+          // ||
+          // event.relatedTarget.tagName === "DIV"
         ) {
           boolenIsEdting = true;
           nowEditText(boolenIsEdting, "root");
@@ -107,7 +108,7 @@ export default {
 
       const getComputedStyle = window.getComputedStyle(textInput.value);
       //存入BlessingText中
-      // console.log(controlColors.value);
+      
       const saveBlessingText = {
         id: new Date().toISOString(),
         text: enterText.value,
@@ -123,7 +124,6 @@ export default {
         },
       };
 
-      // console.log(controlColors.value);
 
       const notSavingBlessing = ["", null, undefined];
       if (!notSavingBlessing.includes(enterText.value.trim())) {
@@ -133,13 +133,15 @@ export default {
       store.dispatch('editText/resetAll');
       store.dispatch("blessing/isAddingText", false);
 
-      console.log(saveBlessingText.controlColors);
+      
 
       textInput.value.style.zIndex = "auto";
 
       enterText.value = "";
 
-      // console.log(window.getComputedStyle(textInput.value).color);
+      // nowEditText(false, "root");
+      console.log(isEditText.value);
+
       const initialInput = {
         lastId: saveBlessingText.id,
         color: window.getComputedStyle(textInput.value).color,
@@ -154,6 +156,7 @@ export default {
     }
 
     function handleFocus() {
+      window.scroll(0,1);
       setZIndex();
     }
 
@@ -163,8 +166,8 @@ export default {
       }
     });
     function mobileBlur() {
-      var field = document.createElement("input");
-      field.setAttribute("type", "text");
+      var field = document.createElement("div");
+      field.setAttribute('tabindex',-1);
       Object.assign(field.style, {
         height: ".5px",
         width: "100%",
@@ -220,6 +223,8 @@ export default {
   justify-content: center;
   position: relative;
   width: 100%;
+  max-width: 1200px;
+  overflow: hidden;
 }
 
 #canvas {
@@ -288,7 +293,9 @@ export default {
 }
 
 .opacity {
-  filter: brightness(0.85);
+  filter: brightness(0.2);
+  opacity: .5;
+
 }
 
 .edit-enter-from {

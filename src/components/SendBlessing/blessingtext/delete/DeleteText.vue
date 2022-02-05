@@ -20,6 +20,7 @@ export default {
         border-radius: 50%;
         z-index: 20;
         background-color: rgb(255, 255, 254);
+        pointer-events: none;
     }
 
     .trash_can>img{

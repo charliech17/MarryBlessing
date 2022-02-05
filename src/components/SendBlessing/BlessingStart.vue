@@ -4,20 +4,36 @@
       <addphoto-button
         :acceptType="{ type: `image`, name: '新增照片' }"
       ></addphoto-button>
+       <!-- @click="updateFile('image') -->
       <addphoto-button
         :acceptType="{ type: `video`, name: '新增影片' }"
       ></addphoto-button>
+      <!-- @click="updateFile('video')" -->
     </div>
   </div>
 </template>
 
 <script>
+// import { useStore } from 'vuex';
+
 import AddphotoButton from "./addphotos/AddphotoButton.vue";
 export default {
   components: {
     AddphotoButton,
   },
-  setup() {},
+  setup(){
+    // const store =useStore();
+    // function updateFile(flieType){
+    //   // store.dispatch("addphoto/updateStateItem",{
+    //   //   name:'inputType',
+    //   //   value:flieType
+    //   // });
+    // }
+
+    return {
+      // updateFile
+    }
+  }
 };
 </script>
 
@@ -40,7 +56,8 @@ export default {
 .inner_background > label {
   /* width: 50%; */
   padding: 0 3rem;
-  box-shadow: 0 0 5px 5px rgba(0,0,0,0.5)
+  box-shadow: 0 0 5px 5px rgba(0,0,0,0.5);
+  cursor: pointer;
   /* max-width: 350px; */
 }
 

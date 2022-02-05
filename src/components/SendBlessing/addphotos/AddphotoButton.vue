@@ -1,38 +1,83 @@
 <template>
+  <base-dialog title="Error" :show="!fileSizeValid" @close="handleError"
+    >上傳的檔案大於20MB，<br />請先解壓縮或上傳較小的檔案</base-dialog
+  >
   <label class="add_photos">
     <div><img :src="imageSrc" /></div>
-    <!-- <input id="image_input" type="file" accept="image/*" /> -->
-    <input id="image_input" type="file" :accept="`${acceptType.type}/*`" />
-    <p>{{acceptType.name}}</p>
+    <input
+      :id="`image_input_` + acceptType.type"
+      type="file"
+      :accept="`${acceptType.type}/*`"
+    />
+    <p>{{ acceptType.name }}</p>
   </label>
 </template>
 
 <script>
 import { onMounted, ref } from "@vue/runtime-core";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 export default {
-  props:['acceptType'],
+  props: ["acceptType"],
   setup(props) {
-    const imageSrc = ref('');
-    onMounted(() => {
-      const inputImages = document.getElementById("image_input");
-      const store = useStore();
-      
+    const imageSrc = ref("");
+    const fileSizeValid = ref(true);
 
-      if(props.acceptType.type==='image'){
-        imageSrc.value = require('../../../img/pic.png');
-      }else{
-        imageSrc.value = require('../../../img/video.png');
+    //網頁Mounted後執行
+    onMounted(() => {
+      const inputFile = document.getElementById(
+        "image_input_" + props.acceptType.type
+      );
+      const store = useStore();
+      const router = useRouter();
+
+      if (props.acceptType.type === "image") {
+        imageSrc.value = require("../../../img/pic.png");
+        handleInputs({ inputFile, store, router });
+      } else if (props.acceptType.type === "video") {
+        imageSrc.value = require("../../../img/video.png");
+        handleInputs({ inputFile, store, router });
       }
 
-      inputImages.addEventListener("change", () => {
-        store.dispatch("addphoto/tellImageInput", {newInput:true,inputFile:inputImages});
-      });
+      // handleInputs({ inputFile, store, router });
+
+      //處理檔案輸入
+      function handleInputs({ inputFile, store, router }) {
+        // console.log(inputFile);
+        inputFile.addEventListener("change", () => {
+          //若檔案大於20MB跳出false
+          if (inputFile.files[0].size > 20971520) {
+            //20,971,520 20971520
+            fileSizeValid.value = false;
+            return;
+          }
+
+          //將檔案存入store中 a. input status, fileType
+          store.dispatch("addphoto/tellImageInput", {
+            newInput: true,
+            inputFile: inputFile,
+          });
+
+          store.dispatch("addphoto/updateStateItem", {
+            name: "inputType",
+            value: props.acceptType.type,
+          });
+
+          router.replace("/blessing");
+        });
+      }
     });
 
-    return {
-      imageSrc
+    //處理錯誤
+    function handleError() {
+      fileSizeValid.value = true;
     }
+
+    return {
+      imageSrc,
+      fileSizeValid,
+      handleError,
+    };
   },
 };
 </script>
@@ -44,6 +89,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0.5rem;
+  cursor: pointer;
 }
 
 .add_photos > div {
@@ -63,7 +110,7 @@ export default {
 .add_photos > p {
   display: inline-block;
   color: white;
-  padding-top: 0.9rem;
+  font-weight: 800;
 }
 input[type="file"] {
   display: none;
