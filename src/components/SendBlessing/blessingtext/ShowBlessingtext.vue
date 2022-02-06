@@ -7,15 +7,18 @@
     :value="blessing.text"
     :style="styleList(blessing.style)"
     draggable="false"
-    @mousedown.prevent="mouseClick"
+    @pointerdown.prevent="mouseClick"
+    @pointermove="mouseMove($event)"
+    @pointerup.prevent="touchEdit({  blessing })"
+    @blur="blurTextArea($event, blessing.id, blessing.style)"
+    @input.prevent="changeSize($event, blessing.id)"
+  />
+  <!-- @mousedown.prevent="mouseClick"
     @mousemove.prevent="mouseMove($event)"
     @mouseup.prevent="touchEdit({  blessing })"
     @touchstart.prevent="mouseClick"
     @touchmove.prevent="mouseMove($event)"
-    @touchend.prevent="touchEdit({  blessing })"
-    @blur="blurTextArea($event, blessing.id, blessing.style)"
-    @input.prevent="changeSize($event, blessing.id)"
-  />
+    @touchend.prevent="touchEdit({  blessing })" -->
   <!-- @dblclick.prevent="clickEdit($event, blessing.id)" -->
   <!-- readonly -->
   <!-- :readonly="judgeParameter.onlyRead" -->
@@ -107,7 +110,7 @@ export default {
       const { htmlWidth, htmlHeight } = getHtmlWidthAndHeight();
 
       textInputValue.style.left = `${
-        (cursorX - textareaWidth / 2) / htmlWidth
+        (cursorX - textareaWidth / 2 - cavasRect.left) / htmlWidth
       }vw`;
       textInputValue.style.top = `${
         (cursorY - textareaHeight / 2 - cavasRect.top) / htmlHeight
@@ -117,16 +120,15 @@ export default {
         (cursorX - textareaWidth / 2) / htmlWidth <
         cavasRect.left / htmlWidth
       ) {
-        textInputValue.style.left = `${cavasRect.left / htmlWidth}vw`;
+        textInputValue.style.left = `${0}vw` //`${cavasRect.left / htmlWidth}vw`;
       }
 
       if (
         (cursorX - textareaWidth / 2) / htmlWidth >
         (cavasRect.right - textareaWidth) / htmlWidth
       ) {
-        textInputValue.style.left = `${
-          (cavasRect.right - textareaWidth) / htmlWidth
-        }vw`;
+        console.log(cavasRect.width);
+        textInputValue.style.left = `${(canvas.offsetWidth -textareaWidth) / htmlWidth}vw`
       }
 
       if (
@@ -137,8 +139,7 @@ export default {
       }
 
       if (cursorY > cavasRect.bottom - textareaHeight / 2) {
-        textInputValue.style.top = null;
-        textInputValue.style.bottom = `${0}vh`;
+        textInputValue.style.top = `${(canvas.offsetHeight-textareaHeight)/htmlHeight}vh`
       }
 
       const getTrash_can = trash_canIcon.value;
@@ -167,23 +168,16 @@ export default {
 
     function mouseup() {
       judgeDelete();
-      // event.preventDefault();
-      // touchEdit();
-      //給 id，從allBlessingText中找出 thisBlessingText
-      // console.log(store.getters['blessing/getInitialInputs'].lastId);
       Object.assign(judgeParameter,{notFocus:true})
-      // judgeParameter.onlyRead = false;
-      // judgeParameter.nowDoubleClick = true;
       const lastId = store.getters["blessing/getInitialInputs"].lastId;
       if (lastId) {
-        // console.log(allBlessingTextAreas);
         const blessing =  allBlessingTextAreas.find(thisBlessing => thisBlessing.id === lastId);
         touchEdit({blessing});
-        // console.log(blessing);
       }
     }
 
-    window.addEventListener("mouseup", mouseup);
+    // window.addEventListener("mouseup", mouseup);
+    window.addEventListener("pointerup", mouseup);
 
     function blurTextArea(event, id, blessingStyle) {
       const textArea = event.target;
@@ -226,7 +220,7 @@ export default {
           textArea,
           blessingStyle.top,
           blessingStyle.left,
-          blessingStyle.bottom
+          // blessingStyle.bottom
         );
         //是否是空值
         if (textArea.value.trim() === "") {
@@ -251,12 +245,11 @@ export default {
     function touchEdit({  blessing }) {
       judgeDelete();
 
-      // console.log(blessing);
       const textArea =  document.getElementById(blessing.id);
 
       try {
         const stylePosition = {
-          bottom: textArea.style.bottom,
+          // bottom: textArea.style.bottom,
           top: textArea.style.top,
           left: textArea.style.left,
         };
@@ -392,6 +385,7 @@ textarea {
   z-index: 1;
   border-radius: 0.5rem;
   font-weight: 800;
+  touch-action:none;
 }
 
 .opacity {

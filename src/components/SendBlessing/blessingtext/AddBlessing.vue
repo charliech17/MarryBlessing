@@ -84,7 +84,7 @@ export default {
 
     function blurInput(event) {
       let boolenIsEdting = false;
-      console.log('blurblur');
+      // console.log('blurblur');
 
       try {
         if (
@@ -152,7 +152,11 @@ export default {
     function changeSize() {
       const width = changeTextareaWidth(textInput, false);
       textAreaWidth.value = width;
-      textInput.value.style.width = `${width}px`;
+      
+      Object.assign(textInput.value.style,{width: `${width}px`,height:'1px'});
+
+      const finalHeight = `${textInput.value.scrollHeight}px`;
+      textInput.value.style.height = finalHeight;
     }
 
     function handleFocus() {
@@ -247,13 +251,13 @@ export default {
   cursor: pointer;
   text-align: center;
   max-width: 80vw;
-  /* width: auto; */
   width: 2px;
   height: auto;
   max-height: 30vh;
   overflow: hidden;
   resize: none;
   font-family: Arial, Helvetica, sans-serif;
+  border-radius: 0.5rem;
 }
 
 ::-webkit-resizer {

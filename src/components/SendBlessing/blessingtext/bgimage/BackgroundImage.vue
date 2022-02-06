@@ -4,16 +4,23 @@
     ref="bgImage"
     v-if="inputType === 'image'"
     @touchstart="handlePointerStart($event)"
+    @load="handleFileLoaded('image')"
   />
-  <video class="show_bg_image" v-else ref="bgVideo" autoplay @touchstart="handlePointerStart($event)"></video>
+  <video
+    class="show_bg_image"
+    v-else
+    ref="bgVideo"
+    autoplay
+    playsinline
+    @touchstart="handlePointerStart($event)"
+    @load="handleFileLoaded('video')"
+  ></video>
 </template>
 
 <script>
 import { computed, ref } from "@vue/reactivity";
-import { onMounted } from "@vue/runtime-core"; //,watch
+import {  onMounted } from "@vue/runtime-core"; //,watch
 import { useStore } from "vuex";
-// import ColorThief from 'https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js';
-// import { useRouter } from 'vue-router';
 
 export default {
   setup() {
@@ -27,46 +34,62 @@ export default {
     const bgImage = ref("");
     const bgVideo = ref("");
 
-    let uploadedFile = "";
+    // let uploadedFile = "";
 
     //1. 當載入頁面時 去看檔案是video 或 image 並設定src
     onMounted(() => {
       if (!inputImage.value.newInput) return;
-// let recaptchaScript = document.createElement('script')
-//       recaptchaScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js')
-//       document.head.appendChild(recaptchaScript)
 
-      // const colorThief = new ColorThief();
-      const reader = new FileReader();
-      reader.addEventListener("load", () => {
-        uploadedFile = reader.result;
-        if (inputType.value === "image") {
-          bgImage.value.src = `${uploadedFile}`;
-          // console.log(colorThief.getColor(bgImage.value));
-          
-        } else {
-          bgVideo.value.src = `${uploadedFile}`;
-        }
+      // const reader = new FileReader();
+      // reader.addEventListener("load", () => {
+      //   uploadedFile = reader.result;
+      //   console.log(reader);
+      //   if (inputType.value === "image") {
+      //     // const result =  analyze(uploadedFile);
+      //     // console,log(result[0].color);
+      //     getbackgroundColor(uploadedFile);
+      //     bgImage.value.src = `${uploadedFile}`;
+      //   } else {
+      //     bgVideo.value.src = `${uploadedFile}`;
+      //   }
 
+      //   document.getElementById("canvas").style.backgroundColor;
+      // });
+      // reader.readAsDataURL(inputImage.value.inputFile.files[0]);
+      let URL = window.URL || window.webkitURL;
+      let fileURL = URL.createObjectURL(inputImage.value.inputFile.files[0]);
 
-        document.getElementById('canvas').style.backgroundColor;
-      });
-      reader.readAsDataURL(inputImage.value.inputFile.files[0]);
+      try {
+        bgImage.value.src = fileURL;
+      } catch (err) {
+        bgVideo.value.src = fileURL;
+      }
+
+      // getbackgroundColor(fileURL);
+
       store.dispatch("addphoto/tellImageInput", {
         newInput: false,
         inputFile: null,
       });
     });
 
-    // const start = { x: 0, y: 0, distance: 0 };
+    //處理image load
+    function handleFileLoaded(inputType){
+      //設定更改背景的element
+      let changeBackgroundElement = inputType === 'image' ? bgImage.value : bgVideo.value;  
+      console.log(getAverageRGB(changeBackgroundElement));
+    }
+
+
     let imageElementScale = 1;
+    let start = {};
 
-  let start = {};
-
-  // Calculate distance between two fingers
-  const distance = (event) => {
-    return Math.hypot(event.touches[0].pageX - event.touches[1].pageX, event.touches[0].pageY - event.touches[1].pageY);
-  };
+    const distance = (event) => {
+      return Math.hypot(
+        event.touches[0].pageX - event.touches[1].pageX,
+        event.touches[0].pageY - event.touches[1].pageY
+      );
+    };
     //2. 設定touch event
 
     //2-1 touch start
@@ -77,14 +100,13 @@ export default {
       if (event.touches.length === 2) {
         event.preventDefault(); // Prevent page scroll
 
-        // Calculate where the fingers have started on the X and Y axis
         start.x = (event.touches[0].pageX + event.touches[1].pageX) / 2;
         start.y = (event.touches[0].pageY + event.touches[1].pageY) / 2;
         start.distance = distance(event);
       }
       //在開始觸摸時加入touchmove event
       event.target.addEventListener("touchmove", (event) => {
-        handlePointerMove(event,imageElement);
+        handlePointerMove(event, imageElement);
       });
 
       event.target.addEventListener("touchup", () => {
@@ -93,7 +115,7 @@ export default {
     }
 
     //2-2 touch move
-    function handlePointerMove(event,imageElement) {
+    function handlePointerMove(event, imageElement) {
       if (event.touches.length === 2) {
         event.preventDefault(); // Prevent page scroll
 
@@ -118,7 +140,6 @@ export default {
         const transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${imageElementScale})`;
         imageElement.style.transform = transform;
         imageElement.style.WebkitTransform = transform;
-        // imageElement.style.zIndex = "0";
       }
     }
 
@@ -129,11 +150,60 @@ export default {
       imageElement.style.zIndex = "";
     }
 
+    function getAverageRGB(imgEl) {
+      var blockSize = 5, // only visit every 5 pixels
+        defaultRGB = { r: 0, g: 0, b: 0 }, // for non-supporting envs
+        canvas = document.createElement("canvas"),
+        context = canvas.getContext && canvas.getContext("2d"),
+        data,
+        width,
+        height,
+        i = -4,
+        length,
+        rgb = { r: 0, g: 0, b: 0 },
+        count = 0;
+
+      if (!context) {
+        return defaultRGB;
+      }
+
+      height = canvas.height =
+        imgEl.naturalHeight || imgEl.offsetHeight || imgEl.height;
+      width = canvas.width =
+        imgEl.naturalWidth || imgEl.offsetWidth || imgEl.width;
+
+      context.drawImage(imgEl, 0, 0);
+
+      try {
+        data = context.getImageData(0, 0, width, height);
+      } catch (e) {
+        /* security error, img on diff domain */
+        return defaultRGB;
+      }
+
+      length = data.data.length;
+
+      while ((i += blockSize * 4) < length) {
+        ++count;
+        rgb.r += data.data[i];
+        rgb.g += data.data[i + 1];
+        rgb.b += data.data[i + 2];
+      }
+
+      // ~~ used to floor values
+      rgb.r = ~~(rgb.r / count);
+      rgb.g = ~~(rgb.g / count);
+      rgb.b = ~~(rgb.b / count);
+
+      return rgb;
+    }
+
     return {
       bgImage,
       bgVideo,
       inputType,
       handlePointerStart,
+      handleFileLoaded
     };
   },
 };
