@@ -1,12 +1,24 @@
 <template>
+<base-dialog :show="notLogin"  title="請先登入" @close="handleError">
+    請先登入帳號，以啟用祝福牆功能
+  </base-dialog>
   <div class="controls_and_contents">
     <transition name="edit">
       <div class="buttons" v-if="!isEditingText">
-        <!-- <addphoto-button :acceptType="{type:`image`,name:'新增照片'}"></addphoto-button> -->
+        <base-button
+          buttonStyle="purple"
+          :needImage="true"
+          @click="videoPlay"
+          v-if="inputType === 'video'"
+          >播放影片 <template #img> <img src="../../img/video.png" /> </template
+        ></base-button>
         <base-button buttonStyle="purple" @click="addText" :needImage="true"
           >新增文字 <template #img> <img src="../../img/text.png" /> </template
         ></base-button>
-        <base-button buttonStyle="purple" :needImage="true"
+        <base-button
+          buttonStyle="purple"
+          :needImage="true"
+          @click="handleUpload"
           >上傳<template #img> <img src="../../img/upload.png" /> </template
         ></base-button>
       </div>
@@ -19,22 +31,24 @@
 </template>
 
 <script>
-import { computed } from "@vue/reactivity";
+import { computed, ref } from "@vue/reactivity";
 import { useStore } from "vuex";
 import AddBlessing from "./blessingtext/AddBlessing.vue";
 import EditBlessing from "./blessingtext/EditBlessing.vue";
-// import AddphotoButton from "./addphotos/AddphotoButton.vue";
-
+import uploadBlessing from "../../hooks/firebase/blessing/uploadBlessing.js";
+import getNewEmail from '../../hooks/getNewEmail.js'
 export default {
   components: {
     AddBlessing,
     EditBlessing,
-    // AddphotoButton,
   },
   setup() {
     const store = useStore();
     const isEditingText = computed(
       () => store.getters["blessing/isEditText"].isEditing
+    );
+    const inputType = computed(
+      () => store.getters["addphoto/getStateItem"].inputType
     );
 
     function addText() {
@@ -50,16 +64,60 @@ export default {
       store.dispatch("blessing/isEditingText", editTexting);
     }
 
+    //video play 按鈕
+    const nowVideoPlay = ref(false);
+    function videoPlay() {
+      nowVideoPlay.value = !nowVideoPlay.value;
+      if (nowVideoPlay.value) {
+        document.getElementsByClassName("show_bg_image")[0].play();
+        return;
+      }
+      document.getElementsByClassName("show_bg_image")[0].pause();
+    }
+
+
+    //處理上傳資料
+     const allAuthInform = computed(
+      () => store.getters["auth/allAuthInform"]["allAuthInform"]
+    );
+    
+    const notLogin = ref(false);
+    function handleUpload() {
+      //若未登入，return 
+      if(!allAuthInform.value.isNewman||!allAuthInform.value.isGuest){
+        notLogin.value = true;
+        return;
+      }
+        // hostEmail 和 guestEmail
+
+      const sendWeddingEmail = store.getters["chat/getSelectedEmail"];
+      const guestEmail = getNewEmail(
+        store.getters["auth/allAuthInform"]["allAuthInform"].email
+      );
+
+      uploadBlessing({ store, sendWeddingEmail, guestEmail });
+      // console.log(upload);
+    }
+
+    function handleError(){
+      notLogin.value = false;
+    }
+
     return {
       addText,
       isEditingText,
+      videoPlay,
+      inputType,
+      handleUpload,
+      notLogin,
+      handleError
     };
   },
 };
 </script>
 
 <style scoped>
-.controls_and_contents{
+.controls_and_contents {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -77,12 +135,12 @@ export default {
   max-width: 1200px;
 }
 
-.edit_blessing{
-  flex: 0 1 auto
+.edit_blessing {
+  flex: 0 1 auto;
 }
 
-.add_blessing{
-  flex: 1 1 auto
+.add_blessing {
+  flex: 1 1 auto;
 }
 
 .buttons > * {
@@ -125,14 +183,14 @@ export default {
   transform: translateY(0);
 }
 
-@media (min-width:1200px) {
-  .controls_and_contents{
+@media (min-width: 1200px) {
+  .controls_and_contents {
     height: auto;
     background-color: rgb(34, 41, 65);
     max-height: none;
   }
-  .buttons>*{
-    border: .3rem white solid;
+  .buttons > * {
+    border: 0.3rem white solid;
   }
 }
 </style>

@@ -40,6 +40,7 @@ import BlessingText from "./ShowBlessingtext.vue";
 import changeTextareaWidth from "../../../hooks/changeTextareaWidth.js";
 import DeleteText from "./delete/DeleteText.vue";
 import BackgroundImage from "./bgimage/BackgroundImage.vue";
+import getHtmlWidthAndHeight from '../../../hooks/getHtmlHeightandWidth.js';
 
 import "animate.css";
 export default {
@@ -99,23 +100,25 @@ export default {
       nowEditText(false, "root");
 
       event.target.style.height = "1px";
-      const finalHeight = `${event.target.scrollHeight}px`;
+      const finalHeight = `${event.target.scrollHeight}`;
+      
 
       showTextArea.value = false;
 
       const getComputedStyle = window.getComputedStyle(textInput.value);
       //存入BlessingText中
       
+      const { htmlWidth, htmlHeight } = getHtmlWidthAndHeight();
       const saveBlessingText = {
         id: new Date().toISOString(),
         text: enterText.value,
         controlColors: JSON.parse(JSON.stringify(controlColors.value)),
         style: {
-          left: 5 + `%`,
+          left: `5%`,
           top: `5%`,
-          bottom: 0,
-          width: `${textAreaWidth.value}px`,
-          height: finalHeight,
+          // bottom: 0,
+          width: `${textAreaWidth.value/htmlWidth}vw`,
+          height: `${finalHeight/htmlHeight}vh`,
           color: getComputedStyle.color,
           backgroundColor: getComputedStyle.backgroundColor
         },
@@ -199,6 +202,7 @@ export default {
       store.dispatch("blessing/isEditingText", editTexting);
     }
 
+
     return {
       mobileBlur,
       handleFocus,
@@ -234,6 +238,7 @@ export default {
   background-color: rgb(255, 255, 255);
   border-radius: 2rem;
   max-width: 1200px;
+
 }
 
 .input_text {

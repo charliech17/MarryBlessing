@@ -30,7 +30,7 @@ import { computed, nextTick, watch } from "@vue/runtime-core";
 import editMoveText from "../../../hooks/editMoveText.js";
 import initialValues from "./initial/initial.js";
 import { useStore } from "vuex";
-
+import getHtmlWidthAndHeight from '../../../hooks/getHtmlHeightandWidth.js';
 import changeTextareaWidth from "../../../hooks/changeTextareaWidth.js";
 
 export default {
@@ -127,7 +127,7 @@ export default {
         (cursorX - textareaWidth / 2) / htmlWidth >
         (cavasRect.right - textareaWidth) / htmlWidth
       ) {
-        console.log(cavasRect.width);
+        // console.log(cavasRect.width);
         textInputValue.style.left = `${(canvas.offsetWidth -textareaWidth) / htmlWidth}vw`
       }
 
@@ -204,8 +204,8 @@ export default {
         const getComputedStyle = window.getComputedStyle(textArea);
         const changeParameters = {
           text: textArea.value,
-          width: `${textArea.offsetWidth}px`,
-          height: textArea.style.height,
+          // width: `${textArea.offsetWidth}px`,
+          // height: textArea.style.height,
           color: getComputedStyle.color,
           backgroundColor: getComputedStyle.backgroundColor,
           controlColors: { ...store.getters["editText/controlColors"] },
@@ -287,20 +287,6 @@ export default {
       store.dispatch("blessing/isEditingText", editTexting);
     }
 
-    function getHtmlWidthAndHeight() {
-      const htmlWidth =
-        (window.innerWidth ||
-          document.documentElement.clientWidth ||
-          document.body.clientWidth) / 100;
-
-      const htmlHeight =
-        (window.innerHeight ||
-          document.documentElement.clientHeight ||
-          document.body.clientHeight) / 100;
-
-      return { htmlWidth, htmlHeight };
-    }
-
     function judgeDelete() {
       if (judgeParameter.deleteTextarea[0] === true) {
         store.dispatch(
@@ -328,8 +314,9 @@ export default {
     // const isCahngeSize = ref(false);
     const isChangeSize = ref(false);
     function changeSize(event, id) {
+      const { htmlWidth, htmlHeight } = getHtmlWidthAndHeight();
       const textInput = event.target;
-      const textAreaWidth = `${changeTextareaWidth(textInput)}px`;
+      const textAreaWidth = `${changeTextareaWidth(textInput)/htmlWidth}vw`;
       isChangeSize.value = true;
 
       if (!textInput.value) return;
@@ -338,7 +325,7 @@ export default {
         height: "1px", //because need scrollHeight
       });
 
-      const finalHeight = `${textInput.scrollHeight}px`;
+      const finalHeight = `${textInput.scrollHeight/htmlHeight}vh`;
       textInput.style.height = finalHeight;
 
       const changeParameters = {
@@ -349,11 +336,6 @@ export default {
       };
       updateBlessingText(id, changeParameters);
     }
-
-    // function goTop(){
-    //   window.scrollTo(0,0);
-    //   document.body.scrollTop =0;
-    // }
 
     return {
       allBlessingTextAreas,
@@ -390,6 +372,7 @@ textarea {
 
 .opacity {
   opacity: 0.2;
+  z-index: -1;
   background-color: black;
 }
 </style>

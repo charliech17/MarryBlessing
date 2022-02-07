@@ -11,10 +11,7 @@
     v-else
     ref="bgVideo"
     @touchstart="handlePointerStart($event)"
-    @play="handleVideoPlay('video')"
-    autoplay
-    playsinline
-    muted
+    @canplay="handleVideoPlay('video')"
   ></video>
 
   <!-- @load="handleFileLoaded('video')" -->
@@ -27,6 +24,7 @@
 import { computed, ref } from "@vue/reactivity";
 import { onMounted } from "@vue/runtime-core"; //,watch
 import { useStore } from "vuex";
+import getHtmlWidthAndHeight from '../../../../hooks/getHtmlHeightandWidth.js';
 
 export default {
   setup() {
@@ -40,7 +38,6 @@ export default {
     const bgImage = ref("");
     const bgVideo = ref("");
 
-    // let uploadedFile = "";
 
     //1. 當載入頁面時 去看檔案是video 或 image 並設定src
     onMounted(() => {
@@ -55,12 +52,6 @@ export default {
         bgVideo.value.src = fileURL;
         // bgVideo.value.play();        
       }
-
-
-      store.dispatch("addphoto/tellImageInput", {
-        newInput: false,
-        inputFile: null,
-      });
     });
 
     //1-1 處理image load 
@@ -85,7 +76,7 @@ export default {
       setTimeout(() => {
         const { r, g, b } = getAverageRGB(bgVideo.value, inputType);
         document.getElementById("canvas").style.backgroundColor = `rgba(${r},${g},${b},0.5)`;
-        document.getElementsByClassName('show_bg_image')[0].removeEventListener('play',handleVideoPlay);
+        document.getElementsByClassName('show_bg_image')[0].play();
       }, 500);
     }
 
@@ -135,8 +126,11 @@ export default {
         const deltaY =
           ((event.touches[0].pageY + event.touches[1].pageY) / 2 - start.y) * 2; // x2 for accelarated movement
 
+        const {htmlWidth, htmlHeight}  =getHtmlWidthAndHeight();
+
         // Transform the image to make it grow and move with fingers
-        const transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${imageElementScale})`;
+        // const transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${imageElementScale})`;
+        const transform = `translate3d(${deltaX/htmlWidth}vw, ${deltaY/htmlHeight}vh, 0) scale(${imageElementScale})`;
         imageElement.style.transform = transform;
         imageElement.style.WebkitTransform = transform;
       }
@@ -197,6 +191,21 @@ export default {
 
       return rgb;
     }
+
+    // //get html width and height
+    // function getHtmlWidthAndHeight() {
+    //   const htmlWidth =
+    //     (window.innerWidth ||
+    //       document.documentElement.clientWidth ||
+    //       document.body.clientWidth) / 100;
+
+    //   const htmlHeight =
+    //     (window.innerHeight ||
+    //       document.documentElement.clientHeight ||
+    //       document.body.clientHeight) / 100;
+
+    //   return { htmlWidth, htmlHeight };
+    // }
 
     return {
       bgImage,
