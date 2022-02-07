@@ -65,6 +65,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 90vh;
+  max-height: 90vh;
   width: 100%;
 }
 
@@ -128,40 +129,10 @@ export default {
   .controls_and_contents{
     height: auto;
     background-color: rgb(34, 41, 65);
+    max-height: none;
   }
   .buttons>*{
     border: .3rem white solid;
   }
 }
-/* .add_photos {
-  background: #350b79;
-  border-radius: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-}
-
-.add_photos > div {
-  display: inline-block;
-  width: 1.8rem;
-  height: 1.8rem;
-  background-color: white;
-  border-radius: 0.3rem;
-  margin-right: 0.2rem;
-}
-
-.add_photos > div > img {
-  width: 100%;
-  height: 100%;
-}
-
-.add_photos>p{
-  display: inline-block;
-  color: white;
-  padding-top: 0.9rem;
-}
-input[type="file"] {
-  display: none;
-} */
 </style>

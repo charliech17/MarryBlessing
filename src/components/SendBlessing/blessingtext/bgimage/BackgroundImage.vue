@@ -10,16 +10,22 @@
     class="show_bg_image"
     v-else
     ref="bgVideo"
+    @touchstart="handlePointerStart($event)"
+    @play="handleVideoPlay('video')"
     autoplay
     playsinline
-    @touchstart="handlePointerStart($event)"
-    @load="handleFileLoaded('video')"
+    muted
   ></video>
+
+  <!-- @load="handleFileLoaded('video')" -->
+  <!-- autoplay
+    playsinline
+    muted -->
 </template>
 
 <script>
 import { computed, ref } from "@vue/reactivity";
-import {  onMounted } from "@vue/runtime-core"; //,watch
+import { onMounted } from "@vue/runtime-core"; //,watch
 import { useStore } from "vuex";
 
 export default {
@@ -40,22 +46,6 @@ export default {
     onMounted(() => {
       if (!inputImage.value.newInput) return;
 
-      // const reader = new FileReader();
-      // reader.addEventListener("load", () => {
-      //   uploadedFile = reader.result;
-      //   console.log(reader);
-      //   if (inputType.value === "image") {
-      //     // const result =  analyze(uploadedFile);
-      //     // console,log(result[0].color);
-      //     getbackgroundColor(uploadedFile);
-      //     bgImage.value.src = `${uploadedFile}`;
-      //   } else {
-      //     bgVideo.value.src = `${uploadedFile}`;
-      //   }
-
-      //   document.getElementById("canvas").style.backgroundColor;
-      // });
-      // reader.readAsDataURL(inputImage.value.inputFile.files[0]);
       let URL = window.URL || window.webkitURL;
       let fileURL = URL.createObjectURL(inputImage.value.inputFile.files[0]);
 
@@ -63,9 +53,9 @@ export default {
         bgImage.value.src = fileURL;
       } catch (err) {
         bgVideo.value.src = fileURL;
+        // bgVideo.value.play();        
       }
 
-      // getbackgroundColor(fileURL);
 
       store.dispatch("addphoto/tellImageInput", {
         newInput: false,
@@ -73,13 +63,12 @@ export default {
       });
     });
 
-    //處理image load
-    function handleFileLoaded(inputType){
+    //1-1 處理image load 
+    function handleFileLoaded(inputType) {
       //設定更改背景的element
-      let changeBackgroundElement = inputType === 'image' ? bgImage.value : bgVideo.value;  
-      console.log(getAverageRGB(changeBackgroundElement));
+      const { r, g, b } = getAverageRGB(bgImage.value, inputType);
+        document.getElementById("canvas").style.backgroundColor = `rgba(${r},${g},${b},0.5)`;
     }
-
 
     let imageElementScale = 1;
     let start = {};
@@ -90,8 +79,18 @@ export default {
         event.touches[0].pageY - event.touches[1].pageY
       );
     };
-    //2. 設定touch event
 
+    //1-2 處理video play
+    function handleVideoPlay(inputType) {
+      setTimeout(() => {
+        const { r, g, b } = getAverageRGB(bgVideo.value, inputType);
+        document.getElementById("canvas").style.backgroundColor = `rgba(${r},${g},${b},0.5)`;
+        document.getElementsByClassName('show_bg_image')[0].removeEventListener('play',handleVideoPlay);
+      }, 500);
+    }
+
+
+    //2. 設定touch event
     //2-1 touch start
     function handlePointerStart(event) {
       // console.log(event.touches);
@@ -150,7 +149,8 @@ export default {
       imageElement.style.zIndex = "";
     }
 
-    function getAverageRGB(imgEl) {
+    function getAverageRGB(imgEl, inputType) {
+      let scale = inputType === "image" ? 1 : 0.25;
       var blockSize = 5, // only visit every 5 pixels
         defaultRGB = { r: 0, g: 0, b: 0 }, // for non-supporting envs
         canvas = document.createElement("canvas"),
@@ -175,7 +175,7 @@ export default {
       context.drawImage(imgEl, 0, 0);
 
       try {
-        data = context.getImageData(0, 0, width, height);
+        data = context.getImageData(0, 0, width * scale, height * scale);
       } catch (e) {
         /* security error, img on diff domain */
         return defaultRGB;
@@ -202,8 +202,9 @@ export default {
       bgImage,
       bgVideo,
       inputType,
+      handleVideoPlay,
       handlePointerStart,
-      handleFileLoaded
+      handleFileLoaded,
     };
   },
 };

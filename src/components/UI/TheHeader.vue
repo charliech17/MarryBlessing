@@ -97,11 +97,11 @@ export default {
   text-decoration: none;
   font-size: 1.5rem;
   font-weight: 900;
-  /* border: 1px white solid; */
   text-align: center;
   display: inline-block;
   box-shadow: 0 0 3px 5px rgba(245, 193, 124, 0.5);
   border-radius: 5px;
+  color: #6a377a;
 }
 
 .switch_page_button > *:hover,

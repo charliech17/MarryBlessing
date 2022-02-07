@@ -84,13 +84,10 @@ export default {
 
     function blurInput(event) {
       let boolenIsEdting = false;
-      // console.log('blurblur');
 
       try {
         if (
           event.relatedTarget.tagName === "BUTTON" 
-          // ||
-          // event.relatedTarget.tagName === "DIV"
         ) {
           boolenIsEdting = true;
           nowEditText(boolenIsEdting, "root");
@@ -233,9 +230,8 @@ export default {
 
 #canvas {
   width: 100%;
-  /* height: 75vh; */
   display: block;
-  background-color: rgb(241, 204, 204);
+  background-color: rgb(255, 255, 255);
   border-radius: 2rem;
   max-width: 1200px;
 }
