@@ -27,7 +27,6 @@ export default {
 html,
 body {
   margin: 0;
-  height: 100vh;
   min-height: -webkit-fill-available;
   transition: scroll 1s ease-in-out;
   scroll-behavior: smooth;
