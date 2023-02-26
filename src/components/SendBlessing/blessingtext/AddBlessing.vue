@@ -214,6 +214,10 @@ export default {
       // },100)
     })
 
+    window.addEventListener('resize',()=> {
+      document.documentElement.style.setProperty('--vh', window.innerHeight * 0.01 + 'px');
+    })
+
     return {
       mobileBlur,
       handleFocus,
