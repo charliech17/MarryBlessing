@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { computed, nextTick, onUnmounted, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useStore } from "vuex";
 import BlessingText from "./ShowBlessingtext.vue";
 import changeTextareaWidth from "../../../hooks/changeTextareaWidth.js";

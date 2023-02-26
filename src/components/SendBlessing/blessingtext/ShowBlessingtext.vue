@@ -104,8 +104,7 @@ export default {
         (cursorX - textareaWidth / 2 - cavasRect.left) / htmlWidth
       }vw`;
       textInputValue.style.top = `${
-        (cursorY - textareaHeight / 2 - cavasRect.top) / htmlHeight
-      }vh`;
+        (cursorY - textareaHeight / 2 - cavasRect.top)}px`;
 
       if (
         (cursorX - textareaWidth / 2) / htmlWidth <
