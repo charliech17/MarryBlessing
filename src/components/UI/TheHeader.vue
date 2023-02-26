@@ -1,5 +1,5 @@
 <template>
-  <div class="the_header">
+  <div class="the_header" id="navHeader">
     <router-link to="/home" class="brand">Marry Blessings</router-link>
     <div class="switch_page_button" v-if="!allAuthInform.isLogin">
       <router-link to="/blessingStart">試用祝福牆</router-link>

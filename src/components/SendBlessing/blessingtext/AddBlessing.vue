@@ -1,5 +1,5 @@
 <template>
-    <div class="main_contents">
+    <div class="main_contents" id="addBlessing_mainContent">
       <transition name="edit">
       <canvas
         id="canvas"
@@ -21,7 +21,7 @@
         @focus="handleFocus"
       />
 
-      <blessing-text :canvas="canvas"></blessing-text>
+      <blessing-text v-if="allBlessingTextAreas.length>0" :canvas="canvas"></blessing-text>
 
       <delete-text
         :class="{ hidden: !isTextMoving, tryDelete: wantDelete }"
@@ -34,13 +34,12 @@
 </template>
 
 <script>
-import { computed, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useStore } from "vuex";
 import BlessingText from "./ShowBlessingtext.vue";
 import changeTextareaWidth from "../../../hooks/changeTextareaWidth.js";
 import DeleteText from "./delete/DeleteText.vue";
 import BackgroundImage from "./bgimage/BackgroundImage.vue";
-import getHtmlWidthAndHeight from '../../../hooks/getHtmlHeightandWidth.js';
 
 import "animate.css";
 export default {
@@ -57,6 +56,7 @@ export default {
     const canvas = ref("");
     const showTextArea = ref(false);
     const textAreaWidth = ref(20);
+    const allBlessingTextAreas = store.getters["blessing/getBlessingText"];
 
     const clickAddText = computed(() => store.getters["blessing/isAddedText"]); //ref(store.getters['blessing/isAddedText']);
     const isTextMoving = computed(
@@ -108,7 +108,6 @@ export default {
       const getComputedStyle = window.getComputedStyle(textInput.value);
       //存入BlessingText中
       
-      const { htmlWidth, htmlHeight } = getHtmlWidthAndHeight();
       const saveBlessingText = {
         id: new Date().toISOString(),
         text: enterText.value,
@@ -117,8 +116,8 @@ export default {
           left: `5%`,
           top: `5%`,
           // bottom: 0,
-          width: `${textAreaWidth.value/htmlWidth}vw`,
-          height: `${finalHeight/htmlHeight}vh`,
+          width: `${textAreaWidth.value}px`,
+          height: `${finalHeight}px`,
           color: getComputedStyle.color,
           backgroundColor: getComputedStyle.backgroundColor
         },
@@ -202,6 +201,18 @@ export default {
       store.dispatch("blessing/isEditingText", editTexting);
     }
 
+    nextTick(()=> {
+      const navHeaderHeight         = document.getElementById('navHeader').clientHeight
+      const buttonEditSectionHeight = document.getElementById('buttonEditSection').clientHeight
+      const totalHeight = buttonEditSectionHeight + navHeaderHeight
+      document.documentElement.style.setProperty('--vh', window.innerHeight * 0.01 + 'px');
+      document.documentElement.style.setProperty('--upperHeight', totalHeight + 'px');
+      // // console.log(document.getElementById("addBlessing_mainContent"),"????addBlessing_mainContent",navHeaderHeight,buttonEditSectionHeight)
+      // setTimeout(()=> {
+      //   document.getElementById("addBlessing_mainContent").style.height = `calc(var(--vh, 1vh) *100 - ${totalHeight}px);`
+      //   console.log(document.getElementById("addBlessing_mainContent").style.height)
+      // },100)
+    })
 
     return {
       mobileBlur,
@@ -216,6 +227,7 @@ export default {
       isTextMoving,
       wantDelete,
       isEditText,
+      allBlessingTextAreas,
     };
   },
 };
@@ -230,6 +242,7 @@ export default {
   width: 100%;
   max-width: 1200px;
   overflow: hidden;
+  height: calc(var(--vh, 1vh) *100 - var(--upperHeight, 0));
 }
 
 #canvas {

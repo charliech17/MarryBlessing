@@ -15,6 +15,8 @@ const WeddingInform = defineAsyncComponent(()=>import('./components/identity/gue
 const ChatWedding = defineAsyncComponent(()=>import('./components/identity/guest/guest components/ChatWedding.vue'));
 const ChatList = defineAsyncComponent(()=>import('./components/identity/newMan/newman components/ChatList.vue'));
 const BlessingStart = defineAsyncComponent(()=>import('./components/SendBlessing/BlessingStart.vue'));
+const PreviewBlessing = defineAsyncComponent(()=>import('./components/identity/newMan/newman components/PreviewBlessing.vue'));
+const ViewBlessing = defineAsyncComponent(()=>import('./components/identity/newMan/newman components/ViewBlessing.vue'));
 
 const router = createRouter({
     history: createWebHistory(),
@@ -28,11 +30,13 @@ const router = createRouter({
             {path:'/newMan/changeInforms',component:ChangeInforms},
             {path:'/newMan/chatlist',component:ChatList},
             {path:'/newMan/chat',component:ChatWedding},
+            {path:'/newMan/previewblessing',component: PreviewBlessing},
+            {path:'/newMan/viewblessing',component: ViewBlessing},
         ]},
         {path:'/identity/guest',component:ConfirmWedding},
         {path:'/guest/wedding',component:EnterWedding,children:[
             {path:'/guest/weddingInform',component: WeddingInform},
-            {path:'/guest/chat',component:ChatWedding }
+            {path:'/guest/chat',component:ChatWedding },
         ]},
         {path:'/blessingStart',component:BlessingStart},
         {path: '/blessing', component: SendBlessing},

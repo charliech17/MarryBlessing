@@ -9,19 +9,10 @@
     draggable="false"
     @pointerdown.prevent="mouseClick"
     @pointermove="mouseMove($event)"
-    @pointerup.prevent="touchEdit({  blessing })"
+    @pointerup.prevent="touchEdit({ blessing })"
     @blur="blurTextArea($event, blessing.id, blessing.style)"
     @input.prevent="changeSize($event, blessing.id)"
   />
-  <!-- @mousedown.prevent="mouseClick"
-    @mousemove.prevent="mouseMove($event)"
-    @mouseup.prevent="touchEdit({  blessing })"
-    @touchstart.prevent="mouseClick"
-    @touchmove.prevent="mouseMove($event)"
-    @touchend.prevent="touchEdit({  blessing })" -->
-  <!-- @dblclick.prevent="clickEdit($event, blessing.id)" -->
-  <!-- readonly -->
-  <!-- :readonly="judgeParameter.onlyRead" -->
 </template>
 
 <script>
@@ -30,7 +21,7 @@ import { computed, nextTick, watch } from "@vue/runtime-core";
 import editMoveText from "../../../hooks/editMoveText.js";
 import initialValues from "./initial/initial.js";
 import { useStore } from "vuex";
-import getHtmlWidthAndHeight from '../../../hooks/getHtmlHeightandWidth.js';
+import getHtmlWidthAndHeight from "../../../hooks/getHtmlHeightandWidth.js";
 import changeTextareaWidth from "../../../hooks/changeTextareaWidth.js";
 
 export default {
@@ -120,7 +111,7 @@ export default {
         (cursorX - textareaWidth / 2) / htmlWidth <
         cavasRect.left / htmlWidth
       ) {
-        textInputValue.style.left = `${0}vw` //`${cavasRect.left / htmlWidth}vw`;
+        textInputValue.style.left = `${0}vw`; //`${cavasRect.left / htmlWidth}vw`;
       }
 
       if (
@@ -128,7 +119,9 @@ export default {
         (cavasRect.right - textareaWidth) / htmlWidth
       ) {
         // console.log(cavasRect.width);
-        textInputValue.style.left = `${(canvas.offsetWidth -textareaWidth) / htmlWidth}vw`
+        textInputValue.style.left = `${
+          (canvas.offsetWidth - textareaWidth) / htmlWidth
+        }vw`;
       }
 
       if (
@@ -139,7 +132,9 @@ export default {
       }
 
       if (cursorY > cavasRect.bottom - textareaHeight / 2) {
-        textInputValue.style.top = `${(canvas.offsetHeight-textareaHeight)/htmlHeight}vh`
+        textInputValue.style.top = `${
+          (canvas.offsetHeight - textareaHeight) / htmlHeight
+        }vh`;
       }
 
       const getTrash_can = trash_canIcon.value;
@@ -168,11 +163,13 @@ export default {
 
     function mouseup() {
       judgeDelete();
-      Object.assign(judgeParameter,{notFocus:true})
+      Object.assign(judgeParameter, { notFocus: true });
       const lastId = store.getters["blessing/getInitialInputs"].lastId;
       if (lastId) {
-        const blessing =  allBlessingTextAreas.find(thisBlessing => thisBlessing.id === lastId);
-        touchEdit({blessing});
+        const blessing = allBlessingTextAreas.find(
+          (thisBlessing) => thisBlessing.id === lastId
+        );
+        touchEdit({ blessing });
       }
     }
 
@@ -219,7 +216,7 @@ export default {
         editMoveText(
           textArea,
           blessingStyle.top,
-          blessingStyle.left,
+          blessingStyle.left
           // blessingStyle.bottom
         );
         //是否是空值
@@ -242,10 +239,10 @@ export default {
       nowEditText(true, id);
     }
 
-    function touchEdit({  blessing }) {
+    function touchEdit({ blessing }) {
       judgeDelete();
 
-      const textArea =  document.getElementById(blessing.id);
+      const textArea = document.getElementById(blessing.id);
 
       try {
         const stylePosition = {
@@ -314,9 +311,8 @@ export default {
     // const isCahngeSize = ref(false);
     const isChangeSize = ref(false);
     function changeSize(event, id) {
-      const { htmlWidth, htmlHeight } = getHtmlWidthAndHeight();
       const textInput = event.target;
-      const textAreaWidth = `${changeTextareaWidth(textInput)/htmlWidth}vw`;
+      const textAreaWidth = `${changeTextareaWidth(textInput)}px`;
       isChangeSize.value = true;
 
       if (!textInput.value) return;
@@ -325,7 +321,7 @@ export default {
         height: "1px", //because need scrollHeight
       });
 
-      const finalHeight = `${textInput.scrollHeight/htmlHeight}vh`;
+      const finalHeight = `${textInput.scrollHeight}px`;
       textInput.style.height = finalHeight;
 
       const changeParameters = {
@@ -367,7 +363,7 @@ textarea {
   z-index: 1;
   border-radius: 0.5rem;
   font-weight: 800;
-  touch-action:none;
+  touch-action: none;
 }
 
 .opacity {

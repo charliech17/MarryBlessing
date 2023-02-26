@@ -21,17 +21,6 @@ export default async function fetchDatePut({
     console.log(hostOrGuest,savePlace,email,idToken);
     return;
   }
-
-  // fetch(
-  //   `https://marryblessing-for-vue-default-rtdb.firebaseio.com/${hostOrGuest}/${savePlace}_${email}.json?auth=${idToken}`,
-  //   {
-  //     method: "PUT",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(saveData),
-  //   }
-  // );
  await fetchPut({hostOrGuest,savePlace,email,idToken,saveData});
 }
 

@@ -64,7 +64,6 @@ import deleteStorageItems from "../../../../hooks/firebase/deleteStorage.js";
 import fetchDatePut from "../../../../hooks/firebase/fetchData.js";
 import { useRouter } from "vue-router";
 import { nextTick } from "@vue/runtime-core";
-// import sad from '../../../../img/identity/noImage.jpg'
 export default {
   setup() {
     let file = null;

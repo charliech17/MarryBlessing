@@ -22,16 +22,7 @@ export default {
     AddphotoButton,
   },
   setup(){
-    // const store =useStore();
-    // function updateFile(flieType){
-    //   // store.dispatch("addphoto/updateStateItem",{
-    //   //   name:'inputType',
-    //   //   value:flieType
-    //   // });
-    // }
-
     return {
-      // updateFile
     }
   }
 };

@@ -34,6 +34,7 @@ export default {
   justify-content: center;
   max-width: 500px;
   margin: 0 auto;
+  padding-top: .5rem;
   /* margin-top: 0.5rem; */
   /* width: 100%; */
 } 

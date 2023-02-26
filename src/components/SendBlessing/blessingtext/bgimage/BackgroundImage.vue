@@ -12,12 +12,11 @@
     ref="bgVideo"
     @touchstart="handlePointerStart($event)"
     @canplay="handleVideoPlay('video')"
-  ></video>
-
-  <!-- @load="handleFileLoaded('video')" -->
-  <!-- autoplay
+    webkit-playsinline
     playsinline
-    muted -->
+    muted
+    loop
+  ></video>
 </template>
 
 <script>
@@ -76,7 +75,10 @@ export default {
       setTimeout(() => {
         const { r, g, b } = getAverageRGB(bgVideo.value, inputType);
         document.getElementById("canvas").style.backgroundColor = `rgba(${r},${g},${b},0.5)`;
-        document.getElementsByClassName('show_bg_image')[0].play();
+        
+        const playVideoButton = document.querySelector("#btn_play_video");
+        // playVideoButton.click();
+        playVideoButton.dispatchEvent(new Event("click"));
       }, 500);
     }
 
@@ -137,10 +139,10 @@ export default {
     }
 
     //2-3 touch end
-    function handlePointerEnd(imageElement) {
-      imageElement.style.transform = "";
-      imageElement.style.WebkitTransform = "";
-      imageElement.style.zIndex = "";
+    function handlePointerEnd() {
+      // imageElement.style.transform = "";
+      // imageElement.style.WebkitTransform = "";
+      // imageElement.style.zIndex = "";
     }
 
     function getAverageRGB(imgEl, inputType) {

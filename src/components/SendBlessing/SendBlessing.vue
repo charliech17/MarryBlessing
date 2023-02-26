@@ -4,12 +4,13 @@
   </base-dialog>
   <div class="controls_and_contents">
     <transition name="edit">
-      <div class="buttons" v-if="!isEditingText">
+      <div id="buttonEditSection" class="buttons" v-if="!isEditingText">
         <base-button
           buttonStyle="purple"
           :needImage="true"
           @click="videoPlay"
           v-if="inputType === 'video'"
+          id="btn_play_video"
           >播放影片 <template #img> <img src="../../img/video.png" /> </template
         ></base-button>
         <base-button buttonStyle="purple" @click="addText" :needImage="true"
@@ -122,8 +123,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 90vh;
-  max-height: 90vh;
+  /* max-height: 90vh; */
   width: 100%;
 }
 
