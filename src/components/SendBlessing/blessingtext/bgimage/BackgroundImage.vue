@@ -23,12 +23,13 @@
 import { computed, ref } from "@vue/reactivity";
 import { onMounted } from "@vue/runtime-core"; //,watch
 import { useStore } from "vuex";
+import { useRouter } from 'vue-router';
 import getHtmlWidthAndHeight from '../../../../hooks/getHtmlHeightandWidth.js';
 
 export default {
   setup() {
     const store = useStore();
-    // const router = useRouter();
+    const router = useRouter();
     const inputImage = computed(() => store.getters["addphoto/getInputStatus"]);
     const inputType = computed(
       () => store.getters["addphoto/getStateItem"].inputType
@@ -40,7 +41,7 @@ export default {
 
     //1. 當載入頁面時 去看檔案是video 或 image 並設定src
     onMounted(() => {
-      if (!inputImage.value.newInput) return;
+      if (!inputImage.value.newInput) return router.replace('/blessingStart');
 
       let URL = window.URL || window.webkitURL;
       let fileURL = URL.createObjectURL(inputImage.value.inputFile.files[0]);
@@ -98,7 +99,7 @@ export default {
       }
       //在開始觸摸時加入touchmove event
       event.target.addEventListener("touchmove", (event) => {
-        handlePointerMove(event, imageElement);
+        debounce(()=>handlePointerMove(event, imageElement))
       });
 
       event.target.addEventListener("touchup", () => {
@@ -120,7 +121,7 @@ export default {
           const deltaDistance = distance(event);
           scale = deltaDistance / start.distance;
         }
-        imageElementScale = Math.min(Math.max(0.8, scale), 4);
+        imageElementScale = Math.min(Math.max(0.8, imageElementScale*scale), 4);
 
         // Calculate how much the fingers have moved on the X and Y axis
         const deltaX =
@@ -208,6 +209,13 @@ export default {
 
     //   return { htmlWidth, htmlHeight };
     // }
+    let debounceTimeout = ''
+    const debounce = (callback) => {
+      clearTimeout(debounceTimeout)
+      debounceTimeout = setTimeout(()=> {
+        callback()
+      },10)
+    }
 
     return {
       bgImage,
