@@ -121,7 +121,11 @@ export default {
           const deltaDistance = distance(event);
           scale = deltaDistance / start.distance;
         }
-        imageElementScale = Math.min(Math.max(0.8, imageElementScale*scale), 4);
+        if(scale <=1.12 && scale>= 0.85) {
+          // scale <=1.12 && scale>= 0.85 不作處理
+        } else {
+          imageElementScale = Math.min(Math.max(0.6, imageElementScale*Math.pow(scale,0.3)), 6);
+        }
 
         // Calculate how much the fingers have moved on the X and Y axis
         const deltaX =
